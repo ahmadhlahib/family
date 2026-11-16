@@ -331,6 +331,28 @@ html:not([lang="ar"]) .sheet h3 { font-family: var(--disp-en); }
 .greet-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .greet-actions .btn { text-decoration: none; }
 
+.stories-head { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; }
+.chip-f { display: inline-flex; gap: 6px; align-items: center; padding: 6px 12px; border-radius: 999px; background: var(--bg2); }
+.chip-f button { border: 0; background: none; }
+.story { display: grid; grid-template-columns: auto 1fr; gap: 14px; padding: 14px; margin-bottom: 12px; border-radius: 18px; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 2px 10px rgba(60, 45, 20, .05); }
+.story-pic { width: 120px; height: 120px; border: 0; padding: 0; border-radius: 14px; overflow: hidden; background: var(--bg2); }
+.story-pic img { width: 100%; height: 100%; object-fit: cover; }
+.story:not(:has(.story-pic)) { grid-template-columns: 1fr; }
+.story h4 { margin: 0 0 4px; font-size: 18px; color: var(--green); }
+.story .meta { font-size: 12px; color: var(--muted); }
+.story-text { white-space: pre-wrap; line-height: 1.8; margin: 8px 0 4px; }
+.story-text.clamp { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.linkish { border: 0; background: none; color: var(--green); font-weight: 600; padding: 0; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.tag { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.tag.on { background: color-mix(in srgb, var(--gold2) 30%, var(--card)); }
+.tag button { border: 0; background: none; padding: 0 2px; }
+.composer { padding: 16px; margin-bottom: 14px; border-radius: 18px; border: 2px solid var(--gold); background: var(--card); }
+.composer h3 { margin-top: 0; }
+.rec { display: flex; gap: 10px; align-items: center; }
+.story audio, .composer audio { width: 100%; margin-top: 6px; }
+@media (max-width: 600px) { .story { grid-template-columns: 1fr; } .story-pic { width: 100%; height: 200px; } }
+
 @media (prefers-reduced-motion: reduce) {
   .leaf, .me-pulse, .loader .sprout * { animation: none !important; }
   .panel, .toast { transition: none; }
@@ -605,6 +627,35 @@ const T = {
     statusTip: "على الهاتف: «شارك الصورة» ثم اختر واتساب ← حالتي، أو فيسبوك.",
     sharePc: "نُزّلت الصورة. أرسلها إلى هاتفك لنشرها على الحالة.",
     noEmails: "لا توجد عناوين بريد للعائلة بعد",
+    dStories: "الذكريات",
+    memories: "ذكريات وقصص",
+    storiesSub: "قصص العائلة وذكرياتها: اكتب، أضف صورة، أو سجّل بصوتك.",
+    storiesAbout: "قصص عن",
+    writeMemory: "اكتب ذكرى",
+    editMemory: "تعديل الذكرى",
+    memTitle: "العنوان",
+    memTitlePh: "مثال: جدّي دياب ودكّانه في الضيعة",
+    memText: "القصة",
+    memTextPh: "احكِ لنا الذكرى كما تتذكرها…",
+    memPeople: "عن مين القصة؟",
+    memTag: "أضف",
+    memNoTags: "لم تُضف أشخاص بعد",
+    memEra: "الزمن (اختياري)",
+    memEraPh: "مثال: السبعينيات، صيف ١٩٨٢",
+    memPhoto: "صورة (اختياري)",
+    memVoice: "تسجيل صوتي (اختياري)",
+    record: "سجّل",
+    recordAgain: "سجّل من جديد",
+    stop: "إيقاف",
+    voiceHint: "حتى ٣ دقائق. أجمل شي إنو الكبار يحكوا القصص بصوتهم 🎙️",
+    noMic: "لا يمكن الوصول إلى الميكروفون على هذا الجهاز",
+    voiceTooLong: "التسجيل طويل جدًا، جرّب تسجيلًا أقصر",
+    publishMemory: "انشر الذكرى",
+    memNeed: "اكتب عنوانًا أو قصة، أو سجّل بصوتك",
+    readMore: "اقرأ المزيد",
+    listen: "استمع",
+    noStories: "لا ذكريات بعد. كن أول من يحكي قصة عن العائلة 📖",
+    noStoriesAbout: "لا قصص عن هذا الشخص بعد. هل تتذكّر شيئًا عنه؟ اكتبه ✍️",
   },
   en: {
     title: "Omran Family Tree", subtitle: "Our roots and branches through the generations", search: "Search a name…",
@@ -755,6 +806,35 @@ const T = {
     statusTip: "On your phone: \"Share image\", then WhatsApp → My status, or Facebook.",
     sharePc: "Image downloaded. Send it to your phone to post it as a status.",
     noEmails: "No family email addresses yet",
+    dStories: "Memories",
+    memories: "Memories & stories",
+    storiesSub: "The family's stories and memories: write, add a photo, or record your voice.",
+    storiesAbout: "Stories about",
+    writeMemory: "Write a memory",
+    editMemory: "Edit memory",
+    memTitle: "Title",
+    memTitlePh: "e.g. Grandpa Diab and his shop in the village",
+    memText: "The story",
+    memTextPh: "Tell the memory the way you remember it…",
+    memPeople: "Who is it about?",
+    memTag: "Add",
+    memNoTags: "No people added yet",
+    memEra: "When (optional)",
+    memEraPh: "e.g. the 1970s, summer 1982",
+    memPhoto: "Photo (optional)",
+    memVoice: "Voice note (optional)",
+    record: "Record",
+    recordAgain: "Record again",
+    stop: "Stop",
+    voiceHint: "Up to 3 minutes. Best of all: let the elders tell the stories in their own voice 🎙️",
+    noMic: "Can't use the microphone on this device",
+    voiceTooLong: "The recording is too long, try a shorter one",
+    publishMemory: "Publish memory",
+    memNeed: "Write a title or story, or record your voice",
+    readMore: "Read more",
+    listen: "Listen",
+    noStories: "No memories yet. Be the first to tell a family story 📖",
+    noStoriesAbout: "No stories about this person yet. Remember something? Write it ✍️",
   },
   de: {
     title: "Stammbaum der Familie Omran",
@@ -972,6 +1052,35 @@ const T = {
     statusTip: "Auf dem Handy: „Bild teilen“, dann WhatsApp → Mein Status oder Facebook.",
     sharePc: "Bild heruntergeladen. Schick es an dein Handy, um es als Status zu posten.",
     noEmails: "Noch keine E-Mail-Adressen der Familie",
+    dStories: "Erinnerungen",
+    memories: "Erinnerungen & Geschichten",
+    storiesSub: "Geschichten und Erinnerungen der Familie: schreiben, Foto hinzufügen oder mit deiner Stimme aufnehmen.",
+    storiesAbout: "Geschichten über",
+    writeMemory: "Erinnerung schreiben",
+    editMemory: "Erinnerung bearbeiten",
+    memTitle: "Titel",
+    memTitlePh: "z. B. Opa Diab und sein Laden im Dorf",
+    memText: "Die Geschichte",
+    memTextPh: "Erzähl die Erinnerung so, wie du sie im Kopf hast…",
+    memPeople: "Um wen geht es?",
+    memTag: "Hinzufügen",
+    memNoTags: "Noch keine Personen hinzugefügt",
+    memEra: "Wann (optional)",
+    memEraPh: "z. B. die 70er, Sommer 1982",
+    memPhoto: "Foto (optional)",
+    memVoice: "Sprachnachricht (optional)",
+    record: "Aufnehmen",
+    recordAgain: "Neu aufnehmen",
+    stop: "Stopp",
+    voiceHint: "Bis zu 3 Minuten. Am schönsten: Die Älteren erzählen die Geschichten mit ihrer eigenen Stimme 🎙️",
+    noMic: "Das Mikrofon kann auf diesem Gerät nicht verwendet werden",
+    voiceTooLong: "Die Aufnahme ist zu lang, bitte kürzer aufnehmen",
+    publishMemory: "Erinnerung veröffentlichen",
+    memNeed: "Schreib einen Titel oder eine Geschichte oder nimm deine Stimme auf",
+    readMore: "Weiterlesen",
+    listen: "Anhören",
+    noStories: "Noch keine Erinnerungen. Erzähl als Erste(r) eine Familiengeschichte 📖",
+    noStoriesAbout: "Noch keine Geschichten über diese Person. Erinnerst du dich an etwas? Schreib es auf ✍️",
   },
 };
 let lang = "ar";
@@ -1332,6 +1441,7 @@ function openPanel(id) {
       <button class="btn gold" data-a="rphoto">📷 ${t("addPhoto")}</button>
       <div class="row"><button class="btn" data-a="rchild">＋ ${t("addChild")}</button><button class="btn" data-a="redit">✎ ${t("suggestEdit")}</button></div>`;
   }
+  A.insertAdjacentHTML("beforeend", `<button class="btn" data-a="stories">📖 ${t("memories")}</button>`);
   panel.classList.add("open");
   pushLayer("panel");
 }
@@ -1346,6 +1456,7 @@ panel.addEventListener("click", (e) => {
   if (a === "photo") photoForm(id);
   if (a === "rmphoto") removePhoto(id);
   if (a === "del") deletePerson(id);
+  if (a === "stories") { storyFilter = id; openDiwan("stories"); return; }
   if (a === "signin") { if (user) openDiwan("chat"); else signInGoogle(); }
   // requests need a verified Google account: sign in first, then open the form
   const req = { rphoto: "photo", rchild: "add", redit: "edit" }[a];
@@ -2217,11 +2328,12 @@ function upcomingBirthdays(details, days = 31) {
 function stopFeeds() {
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
   if (galleryUnsub) { galleryUnsub(); galleryUnsub = null; }
+  if (typeof storiesUnsub !== "undefined" && storiesUnsub) { storiesUnsub(); storiesUnsub = null; }
 }
 async function openDiwan(tab = diwanTab) {
   diwanTab = tab;
   stopFeeds();
-  const list = [["greet", "🎉 " + t("dGreet")], ["chat", "💬 " + t("dChat")], ["album", "📸 " + t("dAlbum")], ["rel", "🤝 " + t("dRel")], ["bday", "🎂 " + t("dBday")], ["meet", "✨ " + t("dMeet")]];
+  const list = [["greet", "🎉 " + t("dGreet")], ["chat", "💬 " + t("dChat")], ["stories", "📖 " + t("dStories")], ["album", "📸 " + t("dAlbum")], ["rel", "🤝 " + t("dRel")], ["bday", "🎂 " + t("dBday")], ["meet", "✨ " + t("dMeet")]];
   if (isAdmin) list.push(["members", `👥 ${t("dMembers")}${joins.length ? ` <span class="badge">${joins.length}</span>` : ""}`]);
   const tabs = list.map(([k, l]) => `<button data-dt="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("");
   openModal(`<h3>🏡 ${t("diwan")}</h3><p class="sub">${t("diwanSub")}</p><div class="tabs">${tabs}</div><div id="dBody"></div>`, true);
@@ -2229,6 +2341,7 @@ async function openDiwan(tab = diwanTab) {
   const body = sheet.querySelector("#dBody");
   if (tab === "greet") return renderGreet(body, greetFocus);
   if (tab === "chat") return renderChat(body);
+  if (tab === "stories") return renderStories(body);
   if (tab === "album") return renderAlbum(body);
   if (tab === "rel") return renderRel(body);
   if (tab === "bday") return renderBday(body);
@@ -2713,6 +2826,188 @@ async function renderGreet(body, focusKey = null) {
   show(all[first]);
 }
 
+/* ================= stories & memories (members only) ================= */
+// stories/{id}: title, text, personIds[], era, thumb, hasPhoto, hasAudio, uid, name, photo, createdAt
+// storyMedia/{id}: photo (full jpeg) and/or audio (voice note) as data URLs
+let storyFilter = null;
+let storiesUnsub = null;
+let stories = [];
+
+function pickAudioType() {
+  const types = ["audio/webm;codecs=opus", "audio/ogg;codecs=opus", "audio/mp4", "audio/webm"];
+  return types.find((x) => window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x)) || "";
+}
+const blobToDataUrl = (b) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); });
+
+async function renderStories(body) {
+  if (storiesUnsub) { storiesUnsub(); storiesUnsub = null; }
+  if (!(await gate(body, "stories"))) return;
+  body.innerHTML = `${privateNotice()}
+    <div class="stories-head">
+      ${storyFilter && P(storyFilter) ? `<span class="chip-f">📖 ${t("storiesAbout")} <b>${esc(nm(P(storyFilter)))}</b> <button data-clearf>✕</button></span>` : `<span class="sub">${t("storiesSub")}</span>`}
+      <button class="btn gold" id="stNew">✍️ ${t("writeMemory")}</button>
+    </div>
+    <div id="stList"><div class="empty">…</div></div>`;
+  body.querySelector("[data-clearf]")?.addEventListener("click", () => { storyFilter = null; renderStories(body); });
+  body.querySelector("#stNew").onclick = () => storyComposer(body);
+  storiesUnsub = onSnapshot(query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(200)), (snap) => {
+    stories = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    drawStories(body);
+  }, (e) => { console.error(e); const l = body.querySelector("#stList"); if (l) l.innerHTML = `<div class="empty">${t("err")}</div>`; });
+}
+
+function drawStories(body) {
+  const list = body.querySelector("#stList");
+  if (!list) { if (storiesUnsub) { storiesUnsub(); storiesUnsub = null; } return; }
+  const shown = storyFilter ? stories.filter((s) => (s.personIds || []).includes(storyFilter)) : stories;
+  list.innerHTML = shown.length ? shown.map((s) => {
+    const mine = s.uid === user?.uid;
+    const when = s.createdAt?.toDate ? s.createdAt.toDate().toLocaleDateString(loc(), { day: "numeric", month: "long", year: "numeric" }) : "";
+    const tags = (s.personIds || []).filter((id) => P(id)).map((id) => `<button class="tag" data-go="${id}">${esc(nm(P(id)))}</button>`).join("");
+    const long = (s.text || "").length > 420;
+    return `<article class="story" data-s="${s.id}">
+      ${s.thumb ? `<button class="story-pic" data-media="${s.id}"><img alt="" src="${esc(s.thumb)}" loading="lazy"></button>` : ""}
+      <div class="story-body">
+        <h4 dir="auto">${esc(s.title || "")}</h4>
+        <div class="meta">✍️ ${esc(s.name)} · ${when}${s.era ? ` · 🕰 ${esc(s.era)}` : ""}${s.edited ? " · " + t("edited") : ""}</div>
+        ${tags ? `<div class="tags">${tags}</div>` : ""}
+        <p class="story-text ${long ? "clamp" : ""}" dir="auto">${esc(s.text || "")}</p>
+        ${long ? `<button class="linkish" data-more="${s.id}">${t("readMore")}</button>` : ""}
+        ${s.hasAudio ? `<div class="audio-slot" id="au-${s.id}"><button class="btn" data-audio="${s.id}">🎧 ${t("listen")}</button></div>` : ""}
+        ${(isAdmin || mine) ? `<div class="foot" style="justify-content:flex-start;margin:6px 0 0"><button class="btn" data-sedit="${s.id}">✎ ${t("edit")}</button><button class="btn danger" data-sdel="${s.id}">🗑 ${t("del")}</button></div>` : ""}
+      </div></article>`;
+  }).join("") : `<div class="empty">${storyFilter ? t("noStoriesAbout") : t("noStories")}</div>`;
+  list.onclick = async (e) => {
+    const go = e.target.closest("[data-go]")?.dataset.go;
+    if (go) { closeModal(); select(go); return; }
+    const more = e.target.closest("[data-more]")?.dataset.more;
+    if (more) { const p = list.querySelector(`[data-s="${more}"] .story-text`); p.classList.remove("clamp"); e.target.remove(); return; }
+    const au = e.target.closest("[data-audio]")?.dataset.audio;
+    if (au) {
+      const slot = list.querySelector(`#au-${au}`); slot.innerHTML = "⏳";
+      try { const m = (await getDoc(doc(db, "storyMedia", au))).data() || {}; slot.innerHTML = m.audio ? `<audio controls autoplay src="${esc(m.audio)}"></audio>` : "—"; } catch (er) { console.error(er); slot.innerHTML = t("err"); }
+      return;
+    }
+    const media = e.target.closest("[data-media]")?.dataset.media;
+    if (media) {
+      const s = stories.find((x) => x.id === media);
+      let full = s.thumb;
+      try { full = (await getDoc(doc(db, "storyMedia", media))).data()?.photo || s.thumb; } catch (er) { console.error(er); }
+      const lb = document.createElement("div"); lb.className = "lightbox";
+      lb.innerHTML = `<div class="lb-inner"><div class="lb-media"><img alt="" src="${esc(full)}"></div><div class="lb-bar"><span><b>${esc(s.title || "")}</b></span><button class="btn" data-x>✕</button></div><div class="private-note small">🔒 ${t("privateNoticeShort")}</div></div>`;
+      document.body.appendChild(lb);
+      pushLayer("lightbox"); closers.lightbox = () => lb.remove();
+      lb.onclick = (ev) => { if (ev.target === lb || ev.target.closest("[data-x]")) { lb.remove(); popLayer("lightbox"); } };
+      return;
+    }
+    const del = e.target.closest("[data-sdel]")?.dataset.sdel;
+    if (del) {
+      const s = stories.find((x) => x.id === del);
+      try { if (s.hasPhoto || s.hasAudio) await deleteDoc(doc(db, "storyMedia", del)); await deleteDoc(doc(db, "stories", del)); toast(t("deleted")); } catch (er) { console.error(er); toast(t("err")); }
+      return;
+    }
+    const ed = e.target.closest("[data-sedit]")?.dataset.sedit;
+    if (ed) storyComposer(body, stories.find((x) => x.id === ed));
+  };
+}
+
+function storyComposer(body, existing = null) {
+  let photo = null, audio = null, recorder = null, chunks = [], timer = null, secs = 0;
+  let tagged = existing ? [...(existing.personIds || [])] : (storyFilter ? [storyFilter] : (myPersonId() ? [] : []));
+  const box = document.createElement("div");
+  box.className = "composer";
+  box.innerHTML = `
+    <h3>${existing ? "✎ " + t("editMemory") : "✍️ " + t("writeMemory")}</h3>
+    <div class="field"><label>${t("memTitle")}</label><input id="mTitle" maxlength="120" dir="auto" value="${esc(existing?.title)}" placeholder="${t("memTitlePh")}"></div>
+    <div class="field"><label>${t("memText")}</label><textarea id="mText" maxlength="5000" rows="7" dir="auto" placeholder="${t("memTextPh")}">${esc(existing?.text)}</textarea></div>
+    <div class="field"><label>${t("memPeople")}</label>
+      <div class="tags" id="mTags"></div>
+      <div class="two">${pickerHtml("mPick", null)}<button class="btn" id="mAdd">＋ ${t("memTag")}</button></div></div>
+    <div class="field"><label>🕰 ${t("memEra")}</label><input id="mEra" maxlength="40" value="${esc(existing?.era)}" placeholder="${t("memEraPh")}"></div>
+    ${existing ? "" : `
+    <div class="two">
+      <div class="field"><label>📷 ${t("memPhoto")}</label>${dropHtml()}</div>
+      <div class="field"><label>🎙️ ${t("memVoice")}</label>
+        <div class="rec"><button class="btn" id="mRec">⏺ ${t("record")}</button><span id="mRecT"></span></div>
+        <div id="mRecOut"></div><p class="sub">${t("voiceHint")}</p></div>
+    </div>`}
+    <div class="foot"><button class="btn" id="mCancel">${t("cancel")}</button><button class="btn primary" id="mSave">${existing ? t("save") : "📖 " + t("publishMemory")}</button></div>`;
+  const list = body.querySelector("#stList");
+  list.before(box);
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+  const drawTags = () => {
+    box.querySelector("#mTags").innerHTML = tagged.filter((id) => P(id)).map((id) => `<span class="tag on">${esc(nm(P(id)))} <button data-untag="${id}">✕</button></span>`).join("") || `<span class="sub">${t("memNoTags")}</span>`;
+  };
+  drawTags();
+  box.querySelector("#mTags").onclick = (e) => { const u = e.target.closest("[data-untag]")?.dataset.untag; if (u) { tagged = tagged.filter((x) => x !== u); drawTags(); } };
+  box.querySelector("#mAdd").onclick = () => {
+    const v = box.querySelector("#mPick").value.trim();
+    const o = [...box.querySelectorAll("#mPickL option")].find((x) => x.value === v);
+    if (!o) { toast(t("relPick")); return; }
+    if (!tagged.includes(o.dataset.id) && tagged.length < 20) tagged.push(o.dataset.id);
+    box.querySelector("#mPick").value = ""; drawTags();
+  };
+  if (!existing) {
+    const dropField = box.querySelector(".drop").parentElement;
+    const drop = dropField.querySelector(".drop"), inp = dropField.querySelector("input[type=file]");
+    drop.onclick = () => inp.click();
+    inp.onchange = async () => {
+      try { photo = await albumPhoto(inp.files[0]); drop.innerHTML = `<img alt="" src="${photo.thumb}">`; } catch (e) { toast(t("needPhoto")); }
+    };
+    const recBtn = box.querySelector("#mRec"), recT = box.querySelector("#mRecT"), recOut = box.querySelector("#mRecOut");
+    const stop = () => { if (recorder && recorder.state !== "inactive") recorder.stop(); clearInterval(timer); };
+    recBtn.onclick = async () => {
+      if (recorder && recorder.state === "recording") { stop(); return; }
+      const type = pickAudioType();
+      if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) { toast(t("noMic")); return; }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunks = []; secs = 0;
+        recorder = new MediaRecorder(stream, type ? { mimeType: type, audioBitsPerSecond: 24000 } : { audioBitsPerSecond: 24000 });
+        recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+        recorder.onstop = async () => {
+          stream.getTracks().forEach((tr) => tr.stop());
+          const blob = new Blob(chunks, { type: recorder.mimeType || type || "audio/webm" });
+          const url = await blobToDataUrl(blob);
+          if (url.length > 900000) { toast(t("voiceTooLong")); audio = null; recOut.innerHTML = ""; }
+          else { audio = url; recOut.innerHTML = `<audio controls src="${url}"></audio>`; }
+          recBtn.textContent = "⏺ " + t("recordAgain"); recT.textContent = "";
+        };
+        recorder.start(1000);
+        recBtn.textContent = "⏹ " + t("stop");
+        timer = setInterval(() => { secs++; recT.textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")} / 3:00`; if (secs >= 180) stop(); }, 1000);
+      } catch (e) { console.error(e); toast(t("noMic")); }
+    };
+  }
+  box.querySelector("#mCancel").onclick = () => { if (recorder && recorder.state === "recording") recorder.stop(); box.remove(); };
+  box.querySelector("#mSave").onclick = async () => {
+    const title = box.querySelector("#mTitle").value.trim(), text = box.querySelector("#mText").value.trim(), era = box.querySelector("#mEra").value.trim();
+    if (!title && !text && !audio) { toast(t("memNeed")); return; }
+    const btn = box.querySelector("#mSave"); btn.disabled = true;
+    try {
+      if (existing) {
+        const upd = { title, text, era, personIds: tagged, edited: true };
+        await updateDoc(doc(db, "stories", existing.id), upd);
+      } else {
+        const data = { title, text, era, personIds: tagged, uid: user.uid, name: user.displayName || user.email, createdAt: serverTimestamp(), hasPhoto: !!photo, hasAudio: !!audio };
+        if (photo) data.thumb = photo.thumb;
+        if (user.photoURL) data.photo = user.photoURL.slice(0, 500);
+        Object.keys(data).forEach((k) => data[k] === "" && delete data[k]);
+        const ref = await addDoc(collection(db, "stories"), data);
+        if (photo || audio) {
+          const m = { uid: user.uid };
+          if (photo) m.photo = photo.full;
+          if (audio) m.audio = audio;
+          if ((m.photo || "").length + (m.audio || "").length > 950000) delete m.photo; // keep the voice if both are too big
+          await setDoc(doc(db, "storyMedia", ref.id), m);
+        }
+        confetti();
+      }
+      box.remove(); toast(t("saved"));
+    } catch (e) { console.error(e); toast(t("err")); btn.disabled = false; }
+  };
+}
+
 /* ================= misc controls ================= */
 document.getElementById("zIn").onclick = () => svg.transition().call(zoom.scaleBy, 1.35);
 document.getElementById("zOut").onclick = () => svg.transition().call(zoom.scaleBy, 1 / 1.35);
@@ -2730,7 +3025,7 @@ const setView = (v) => {
 document.getElementById("vTree").onclick = () => setView("tree");
 document.getElementById("vRadial").onclick = () => setView("radial");
 document.getElementById("btnWho").onclick = () => welcome(true);
-document.getElementById("btnDiwan").onclick = () => openDiwan();
+document.getElementById("btnDiwan").onclick = () => { storyFilter = null; openDiwan(); };
 document.getElementById("btnLang").onclick = () => {
   lang = { ar: "en", en: "de", de: "ar" }[lang] || "ar";
   try { localStorage.setItem("ft-lang", lang); } catch (e) { /* storage blocked */ }
