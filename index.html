@@ -2062,7 +2062,9 @@ function posterSvg(kind, plang) {
 // Mother side: your name + father + mother + mother's father -> find your mother (add you under her),
 // or her father (add your mother, her husband and you in one request).
 const same = (a, b) => !!a && !!b && fold(a).replace(/\s/g, "") === fold(b).replace(/\s/g, "");
-const nameMatch = (id, s) => !!P(id) && (same(P(id).ar, s) || same(P(id).en, s));
+// compound names ("Diab-Ali" / "دياب علي") also match on any single part, so "Diab" finds them
+const nameParts = (n) => String(n || "").split(/[\s\-_]+/).filter(Boolean);
+const nameMatch = (id, s) => !!P(id) && [P(id).ar, P(id).en].some((n) => same(n, s) || nameParts(n).some((part) => same(part, s)));
 const childNamed = (parentId, s) => kidsOf(parentId).filter((k) => nameMatch(k, s));
 const lineText = (id, n = 4) => lineage(id).slice(0, n).map((a) => nm(P(a))).join(" ← ");
 const isArabicText = (s) => /[؀-ۿ]/.test(s);
