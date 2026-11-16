@@ -51,7 +51,7 @@ body {
   background-color: var(--bg);
   color: var(--ink); font-family: var(--ar); -webkit-tap-highlight-color: transparent;
 }
-html[lang="en"] body { font-family: var(--en); }
+html:not([lang="ar"]) body { font-family: var(--en); }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 
@@ -68,7 +68,7 @@ button { cursor: pointer; }
   box-shadow: inset 0 0 0 2px rgba(227, 194, 107, .4);
 }
 .brand h1 { margin: 0; font-family: var(--disp-ar); font-size: 20px; line-height: 1.1; white-space: nowrap; }
-html[lang="en"] .brand h1 { font-family: var(--disp-en); letter-spacing: .01em; }
+html:not([lang="ar"]) .brand h1 { font-family: var(--disp-en); letter-spacing: .01em; }
 .brand small { display: block; color: var(--muted); font-size: 12px; white-space: nowrap; }
 .spacer { flex: 1; }
 .search { position: relative; width: min(320px, 34vw); }
@@ -172,7 +172,7 @@ html[dir="rtl"] .panel { transform: translateX(calc(-100% - 24px)); }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .panel .content { padding: 12px 20px 20px; overflow: auto; text-align: center; }
 .panel h2 { margin: 8px 0 2px; font-family: var(--disp-ar); font-size: 28px; }
-html[lang="en"] .panel h2 { font-family: var(--disp-en); }
+html:not([lang="ar"]) .panel h2 { font-family: var(--disp-en); }
 .panel .alt { color: var(--muted); margin: 0; }
 .lineage {
   margin: 14px 0; padding: 12px 14px; border-radius: 14px; background: var(--bg); border: 1px dashed var(--line);
@@ -211,7 +211,7 @@ html[lang="en"] .panel h2 { font-family: var(--disp-en); }
 @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } }
 @keyframes pop { from { transform: translateY(16px) scale(.97); opacity: 0; } }
 .sheet h3 { margin: 0 0 4px; font-family: var(--disp-ar); font-size: 22px; }
-html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
+html:not([lang="ar"]) .sheet h3 { font-family: var(--disp-en); }
 .sheet p.sub { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
 .field { display: grid; gap: 5px; margin-bottom: 12px; }
 .field label { font-size: 13px; font-weight: 600; }
@@ -756,21 +756,240 @@ const T = {
     sharePc: "Image downloaded. Send it to your phone to post it as a status.",
     noEmails: "No family email addresses yet",
   },
+  de: {
+    title: "Stammbaum der Familie Omran",
+    subtitle: "Unsere Wurzeln und Zweige über Generationen",
+    search: "Namen suchen…",
+    viewTree: "Baum",
+    viewCircle: "Kreis",
+    poster: "Poster",
+    requests: "Anfragen",
+    people: "Personen",
+    generations: "Generationen",
+    photos: "Fotos",
+    generation: "Generation",
+    children: "Kinder",
+    descendants: "Nachkommen",
+    loading: "Der Baum wächst…",
+    son: "Sohn von",
+    daughter: "Tochter von",
+    you: "Du",
+    youAreOwner: "Besitzer-Modus",
+    suggestEdit: "Korrektur vorschlagen",
+    addChild: "Kind hinzufügen",
+    addPhoto: "Foto hinzufügen",
+    edit: "Bearbeiten",
+    del: "Löschen",
+    changePhoto: "Foto ändern",
+    removePhoto: "Foto entfernen",
+    reqTitle: "Anfrage senden",
+    reqSub: "Deine Anfrage geht an Ahmad und die Admins und erscheint nach der Freigabe im Stammbaum.",
+    tAdd: "Person hinzufügen",
+    tEdit: "Korrektur",
+    tPhoto: "Foto",
+    nameAr: "Name auf Arabisch",
+    nameEn: "Name in lateinischer Schrift",
+    gender: "Geschlecht",
+    male: "Männlich",
+    female: "Weiblich",
+    note: "Notiz (optional)",
+    yourName: "Dein Name",
+    contact: "Telefon oder E-Mail (optional)",
+    photoHint: "Tippe hier oder ziehe ein Foto hierher",
+    send: "Senden",
+    cancel: "Abbrechen",
+    save: "Speichern",
+    sent: "Danke! Deine Anfrage wurde gesendet und erscheint nach der Freigabe 🌱",
+    saved: "Gespeichert ✓",
+    deleted: "Gelöscht",
+    childOf: "Kind von",
+    parent: "Elternteil",
+    needName: "Bitte den Namen auf Arabisch oder in lateinischer Schrift eingeben",
+    needYou: "Bitte deinen Namen eingeben, damit Ahmad weiß, wer die Anfrage geschickt hat",
+    needPhoto: "Bitte ein Foto auswählen",
+    inbox: "Anfragen der Familie",
+    inboxSub: "Freigeben, um eine Anfrage in den Stammbaum zu übernehmen, oder ablehnen.",
+    approve: "Freigeben",
+    reject: "Ablehnen",
+    noReq: "Keine neuen Anfragen 🎉",
+    reqAdd: "Hinzufügen",
+    reqEdit: "Korrigieren",
+    reqPhoto: "Foto für",
+    under: "unter",
+    from: "von",
+    approved: "Freigegeben und in den Stammbaum übernommen 🌳",
+    rejected: "Anfrage abgelehnt",
+    posterTitle: "Poster exportieren",
+    posterSub: "Eine hochauflösende Datei für den Großdruck.",
+    pTree: "Baum",
+    pTreeSub: "Ansicht von oben nach unten",
+    pCircle: "Kreis",
+    pCircleSub: "Wurzel in der Mitte",
+    pPng: "PNG-Bild",
+    pSvg: "SVG (beliebige Größe)",
+    pPrint: "Drucken / PDF",
+    pLang: "Sprache des Posters",
+    making: "Poster wird erstellt…",
+    signIn: "Anmelden",
+    signOut: "Abmelden",
+    notOwner: "Dieses Konto kann den Stammbaum nicht bearbeiten",
+    empty: "Der Stammbaum wurde noch nicht veröffentlicht.",
+    importJson: "Stammbaum importieren (JSON)",
+    exportJson: "Sicherung (JSON)",
+    imported: "Stammbaum veröffentlicht 🌳",
+    confirmDel: "Diese Person löschen?",
+    hasKids: "Eine Person mit Kindern kann nicht gelöscht werden. Bitte zuerst die Kinder löschen.",
+    addRoot: "Hinzufügen",
+    editPerson: "Person bearbeiten",
+    newChild: "Neues Kind",
+    posterBy: "Stammbaum der Familie Omran",
+    err: "Etwas ist schiefgelaufen, bitte versuche es noch einmal",
+    owner: "Besitzer",
+    lineageOf: "Abstammung",
+    genN: "Generation",
+    bornYear: "Geburtsjahr (optional)",
+    deathYear: "Todesjahr (optional)",
+    moveTo: "Verschieben unter (optional)",
+    phone: "Telefon",
+    email: "E-Mail",
+    dob: "Geburtsdatum",
+    info: "Über mich (für alle sichtbar)",
+    privateHint: "Telefon, WhatsApp, E-Mail und Geburtsdatum sehen nur bestätigte Familienmitglieder.",
+    msgToAdmin: "Nachricht an den Admin (optional)",
+    sendingAs: "Gesendet als",
+    badEmail: "Diese E-Mail-Adresse ist ungültig",
+    adminMode: "Admin-Modus",
+    member: "Familienmitglied",
+    admins: "Admins",
+    adminsSub: "Admins können Anfragen freigeben und den Stammbaum bearbeiten. Füge ihre Gmail-Adresse hinzu.",
+    addAdmin: "Admin hinzufügen",
+    signInToSee: "Telefon, WhatsApp und Geburtstag nur für bestätigte Familienmitglieder",
+    signInForInbox: "Mit Google anmelden, um die Anfragen zu öffnen",
+    welcomeTitle: "Willkommen im Stammbaum der Familie Omran",
+    welcomeSub: "Gehörst du zur Familie? Gib deinen Namen, den deines Vaters und deines Großvaters ein, und wir finden dich.",
+    yourFirstName: "Dein Name",
+    fatherName: "Name des Vaters",
+    grandName: "Name des Großvaters",
+    findMe: "Finde mich",
+    justBrowse: "Nur ansehen",
+    needMeFather: "Gib mindestens deinen Namen und den deines Vaters ein",
+    foundYou: "Gefunden! Tippe auf deinen Namen:",
+    thatsMe: "Das bin ich",
+    notYetButFather: "Du bist noch nicht im Stammbaum, aber wir haben deinen Vater gefunden. Füge dich unter ihm hinzu:",
+    addMeHere: "Mich hier hinzufügen",
+    notFound: "Wir haben diesen Namen nicht gefunden. Versuche eine andere Schreibweise (Arabisch oder lateinisch) oder sende eine Anfrage über die Karte deines Vaters.",
+    nowAddInfo: "Das ist dein Platz im Stammbaum 🌳",
+    helloName: "Hallo {n}!",
+    addInfoSub: "Füge dein Foto, Telefon, WhatsApp und Geburtsdatum hinzu, um deine Karte zu vervollständigen. Ahmad gibt sie vor der Anzeige frei.",
+    later: "Später",
+    addMyInfo: "Meine Angaben hinzufügen",
+    whoAmI: "Finde dich",
+    spouseLabel: "Name von Ehemann / Ehefrau",
+    husband: "Ehemann",
+    wife: "Ehefrau",
+    sonsNames: "Namen der Söhne",
+    daughtersNames: "Namen der Töchter",
+    commaHint: "Namen mit Komma trennen",
+    hisMother: "seine Mutter",
+    herMother: "ihre Mutter",
+    areYouFamily: "Gehörst du zur Familie Omran?",
+    viaFather: "Ja, über meinen Vater",
+    viaFatherSub: "Mein Vater und Großvater sind Omran",
+    viaMother: "Ja, über meine Mutter",
+    viaMotherSub: "Meine Mutter stammt aus der Familie Omran",
+    back: "Zurück",
+    iAm: "Ich bin",
+    motherName: "Name der Mutter",
+    motherFather: "Name des Vaters der Mutter",
+    motherSideSub: "Gib deinen Namen, den deines Vaters, deiner Mutter und ihres Vaters ein, und wir finden dich.",
+    needMother: "Gib deinen Namen, den deiner Mutter und den ihres Vaters ein",
+    foundMother: "Wir haben deine Mutter gefunden! Füge dich unter ihr hinzu:",
+    notMotherButGrand: "Wir haben den Vater deiner Mutter gefunden. Füge deine Mutter, ihren Ehemann und dich in einer Anfrage hinzu:",
+    addMotherAndMe: "Meine Mutter und mich hinzufügen",
+    diwan: "Familien-Diwan",
+    diwanSub: "Der Treffpunkt der Familie: Chat, Fotos & Videos, Geburtstage und Verwandte kennenlernen.",
+    dChat: "Chat",
+    dAlbum: "Fotos & Videos",
+    dRel: "Wie sind wir verwandt?",
+    dBday: "Geburtstage",
+    dMeet: "Verwandte kennenlernen",
+    dMembers: "Mitglieder",
+    privateNotice: "Nur für die Familie: Chat, Fotos, Videos, Telefonnummern, Geburtstage und Fotos von Frauen und Mädchen sehen nur bestätigte Familienmitglieder, die Ahmad oder ein Admin freigegeben hat. Bitte nicht außerhalb der Familie teilen.",
+    privateNoticeShort: "Nur für bestätigte Familienmitglieder — bitte nicht außerhalb der Familie teilen.",
+    gateSignIn: "Melde dich mit Google an und bitte dann um Aufnahme als Familienmitglied.",
+    joinTitle: "Aufnahme in die Familie beantragen",
+    joinSub: "Sag uns, wer du bist. Deine Anfrage geht an Ahmad; nach Prüfung und Freigabe siehst du Chat, Fotos und Videos.",
+    joinWho: "Wer bist du im Stammbaum? (wähle deinen Namen, falls vorhanden)",
+    joinNote: "Stell dich vor",
+    joinNotePh: "z. B. Ich bin Sara, Tochter von Khaled; meine Mutter ist Laila, Tochter von Hamdan",
+    joinSend: "Aufnahme beantragen",
+    joinNeedWho: "Wähle deinen Namen oder stell dich vor",
+    joinSent: "Anfrage gesendet! Nach der Freigabe bekommst du Zugang 🌱",
+    joinPending: "Deine Anfrage wird geprüft. Nach Ahmads Freigabe bekommst du Zugang.",
+    joinRequests: "Aufnahmeanfragen",
+    membersList: "Bestätigte Mitglieder",
+    removeMember: "Entfernen",
+    chatPh: "Schreib der Familie…",
+    chatAs: "Du schreibst als",
+    chatEmpty: "Noch keine Nachrichten. Grüß die Familie als Erste(r) 👋",
+    edited: "bearbeitet",
+    addPhotos: "Fotos hinzufügen",
+    addVideo: "Video hinzufügen",
+    videoPh: "Link zu einem YouTube- oder Google-Drive-Video",
+    captionPh: "Kurze Beschreibung (optional)",
+    videoHint: "Für Videos: auf YouTube als „Nicht gelistet“ oder auf Google Drive hochladen und den Link hier einfügen.",
+    badVideo: "Bitte einen YouTube- oder Google-Drive-Link einfügen",
+    uploading: "Wird hochgeladen…",
+    albumEmpty: "Das Album ist leer. Teile das erste Familienfoto 📸",
+    relFrom: "Erste Person",
+    relTo: "Zweite Person",
+    relGo: "Wie sind sie verwandt?",
+    relPick: "Wähle zwei Personen aus der Liste",
+    relIs: "ist",
+    relShow: "Beide im Stammbaum zeigen",
+    relSame: "dieselbe Person",
+    relHe: "Verwandtschaft mit dir:",
+    today: "heute",
+    tomorrow: "morgen",
+    inDays: "in {n} Tagen",
+    turns: "wird",
+    sendWish: "Glückwunsch senden",
+    bdayWish: "Alles Gute zum Geburtstag, {n} 🎂🌳 — vom Stammbaum der Familie Omran",
+    noBdays: "Keine Geburtstage im nächsten Monat (oder noch keine Geburtsdaten eingetragen).",
+    view: "Ansehen",
+    another: "Andere(r) Verwandte(r)",
+    meetHint: "Tippe auf „Finde dich“, dann zeigen wir dir, wie du mit allen verwandt bist.",
+    womenPhotosPrivate: "Fotos von Frauen und Mädchen sehen nur bestätigte Familienmitglieder.",
+    relativeTo: "in Bezug auf",
+    dGreet: "Grüße",
+    greetSub: "Eine fertige Karte für jeden Freitag und jeden Anlass: teile sie in deinem WhatsApp-Status oder auf Facebook oder schick sie der Familie.",
+    greetBdayMembers: "Die Geburtstage der Familie sehen hier bestätigte Familienmitglieder.",
+    shareImage: "Bild teilen",
+    copyText: "Text kopieren",
+    download: "Herunterladen",
+    emailFamily: "Per E-Mail an die Familie",
+    copied: "Kopiert ✓",
+    statusTip: "Auf dem Handy: „Bild teilen“, dann WhatsApp → Mein Status oder Facebook.",
+    sharePc: "Bild heruntergeladen. Schick es an dein Handy, um es als Status zu posten.",
+    noEmails: "Noch keine E-Mail-Adressen der Familie",
+  },
 };
 let lang = "ar";
 try {
   const saved = localStorage.getItem("ft-lang");
-  if (saved === "ar" || saved === "en") lang = saved;
+  if (saved === "ar" || saved === "en" || saved === "de") lang = saved;
 } catch (e) { /* storage blocked: keep Arabic */ }
-const t = (k) => T[lang][k] ?? k;
+const t = (k) => T[lang]?.[k] ?? T.en[k] ?? k;
+const loc = () => ({ ar: "ar-LB", en: "en-GB", de: "de-DE" }[lang] || "en-GB");
 
 function applyLang() {
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t(el.dataset.t); });
   document.querySelectorAll("[data-ph]").forEach((el) => { el.placeholder = t(el.dataset.ph); });
-  document.getElementById("btnLang").textContent = lang === "ar" ? "EN" : "ع";
-  document.title = lang === "ar" ? "شجرة آل عمران · Omran Family Tree" : "Omran Family Tree · شجرة آل عمران";
+  document.getElementById("btnLang").textContent = { ar: "EN", en: "DE", de: "ع" }[lang];
+  document.getElementById("btnLang").title = { ar: "English", en: "Deutsch", de: "العربية" }[lang];
+  document.title = { ar: "شجرة آل عمران · Omran Family Tree", en: "Omran Family Tree · شجرة آل عمران", de: "Stammbaum Omran · شجرة آل عمران" }[lang];
 }
 
 /* ================= state ================= */
@@ -1498,7 +1717,7 @@ function inbox() {
       r.phone && `📞 <span dir="ltr">${esc(r.phone)}</span>`, r.wa && `💬 <span dir="ltr">${esc(r.wa)}</span>`,
       r.pemail && `✉️ <span dir="ltr">${esc(r.pemail)}</span>`, r.dob && `🎂 <span dir="ltr">${esc(r.dob)}</span>`,
     ].filter(Boolean).join(" · ");
-    const when = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB") : "";
+    const when = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString(loc()) : "";
     return `<div class="req" data-r="${r.id}">
       <div class="pic">${r.photo ? `<img alt="" src="${r.photo}">` : (r.type === "add" ? "🌱" : "✎")}</div>
       <div><div class="meta">${t("from")} <b>${esc(r.by)}</b> · <span dir="ltr">${esc(r.byEmail || "")}</span> · ${when}</div>
@@ -1630,7 +1849,7 @@ document.getElementById("btnPoster").onclick = () => {
   let kind = view, plang = lang;
   openModal(`<h3>${t("posterTitle")}</h3><p class="sub">${t("posterSub")}</p>
     <div class="opts" id="pk"><button class="opt" data-k="tree"><b>${t("pTree")}</b><span>${t("pTreeSub")}</span></button><button class="opt" data-k="radial"><b>${t("pCircle")}</b><span>${t("pCircleSub")}</span></button></div>
-    <div class="field"><label>${t("pLang")}</label><div class="tabs" id="pl"><button data-l="ar">العربية</button><button data-l="en">English</button></div></div>
+    <div class="field"><label>${t("pLang")}</label><div class="tabs" id="pl"><button data-l="ar">العربية</button><button data-l="en">English</button><button data-l="de">Deutsch</button></div></div>
     <div class="foot" style="justify-content:stretch"><button class="btn primary" id="xPng" style="flex:1;justify-content:center">⬇ ${t("pPng")}</button><button class="btn" id="xSvg" style="flex:1;justify-content:center">⬇ ${t("pSvg")}</button><button class="btn" id="xPrint" style="flex:1;justify-content:center">🖨 ${t("pPrint")}</button></div>`);
   const sync = () => {
     sheet.querySelectorAll("[data-k]").forEach((b) => b.classList.toggle("on", b.dataset.k === kind));
@@ -1713,7 +1932,7 @@ function posterSvg(kind, plang) {
     s += `</g>`;
   });
   s += `</g>`;
-  s += `<text x="${w / 2}" y="${h - 60}" text-anchor="middle" font-size="22" fill="#776c5a">ahmadellahib.dev/family · ${new Date().toLocaleDateString(plang === "ar" ? "ar-LB" : "en-GB", { year: "numeric", month: "long" })}</text>`;
+  s += `<text x="${w / 2}" y="${h - 60}" text-anchor="middle" font-size="22" fill="#776c5a">ahmadellahib.dev/family · ${new Date().toLocaleDateString(ploc(), { year: "numeric", month: "long" })}</text>`;
   s += `</svg>`;
   return { svgText: s, w, h };
 }
@@ -1842,7 +2061,7 @@ const myPersonId = () => { try { const m = localStorage.getItem("ft-me"); return
 const privateNotice = () => `<div class="private-note">🔒 ${t("privateNotice")}</div>`;
 
 /* ---------- how are two people related? ---------- */
-function relationText(a, b) {
+function relationTextRaw(a, b) {
   if (!P(a) || !P(b)) return "";
   if (a === b) return t("relSame");
   const la = lineage(a), lb = lineage(b);
@@ -1880,6 +2099,24 @@ function relationText(a, b) {
   const deg = Math.min(da, db) - 1;
   return ar ? `يجمعهما الجد ${nm(P(lca))} — ${da === db ? `أبناء عمومة من الدرجة ${deg}` : `بينهما ${Math.abs(da - db)} جيل`}`
     : `common ancestor ${nm(P(lca))} — ${da === db ? `cousins of degree ${deg}` : `${Math.abs(da - db)} generation(s) apart`}`;
+}
+const DE_REL = {
+  "his son": "sein Sohn", "his daughter": "seine Tochter", "his grandson": "sein Enkel", "his granddaughter": "seine Enkelin",
+  "his father": "sein Vater", "his mother": "seine Mutter", "his grandfather": "sein Großvater", "his grandmother": "seine Großmutter",
+  "his brother": "sein Bruder", "his sister": "seine Schwester",
+  "his paternal uncle": "sein Onkel väterlicherseits", "his paternal aunt": "seine Tante väterlicherseits",
+  "his maternal uncle": "sein Onkel mütterlicherseits", "his maternal aunt": "seine Tante mütterlicherseits",
+  "his nephew": "sein Neffe", "his niece": "seine Nichte", "his first cousin": "sein Cousin ersten Grades",
+};
+function relationText(a, b) {
+  const r = relationTextRaw(a, b);
+  if (lang !== "de") return r;
+  if (DE_REL[r]) return DE_REL[r];
+  if (a === b) return t("relSame");
+  return r.replace(/^a descendant, (\d+) generations below$/, "ein Nachkomme, $1 Generationen darunter")
+    .replace(/^an ancestor, (\d+) generations up$/, "ein Vorfahre, $1 Generationen darüber")
+    .replace(/^common ancestor (.+) — cousins of degree (\d+)$/, "gemeinsamer Vorfahre $1 — Cousins $2. Grades")
+    .replace(/^common ancestor (.+) — (\d+) generation\(s\) apart$/, "gemeinsamer Vorfahre $1 — $2 Generation(en) auseinander");
 }
 let extraHL = new Set();
 function showBoth(a, b) {
@@ -2030,7 +2267,7 @@ function drawChat() {
   const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
   list.innerHTML = chatMsgs.length ? chatMsgs.map((m) => {
     const mine = m.uid === user?.uid;
-    const when = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString(lang === "ar" ? "ar-LB" : "en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+    const when = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString(loc(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const who = m.personId && P(m.personId) ? `<a data-go="${m.personId}">${esc(lineText(m.personId, 3))}</a>` : "";
     const tools = (isAdmin || mine) ? `<span class="tools">${isAdmin ? `<button data-edit="${m.id}" title="${t("edit")}">✎</button>` : ""}<button data-delm="${m.id}" title="${t("del")}">🗑</button></span>` : "";
     return `<div class="msg ${mine ? "mine" : ""}" data-m="${m.id}">
@@ -2135,7 +2372,7 @@ async function openMedia(id) {
   const g = galleryItems.find((x) => x.id === id); if (!g) return;
   const lb = document.createElement("div"); lb.className = "lightbox";
   const canDel = isAdmin || g.uid === user?.uid;
-  const when = g.createdAt?.toDate ? g.createdAt.toDate().toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB") : "";
+  const when = g.createdAt?.toDate ? g.createdAt.toDate().toLocaleDateString(loc()) : "";
   lb.innerHTML = `<div class="lb-inner"><div class="lb-media">⏳</div>
     <div class="lb-bar"><span><b>${esc(g.name)}</b> · ${when}${g.caption ? " · " + esc(g.caption) : ""}</span>
     <span>${canDel ? `<button class="btn danger" data-del>🗑 ${t("del")}</button>` : ""}<button class="btn" data-x>✕</button></span></div>
@@ -2182,7 +2419,7 @@ async function renderBday(body) {
   body.innerHTML = `<div class="empty">…</div>`;
   const list = upcomingBirthdays(await loadAllDetails());
   body.innerHTML = privateNotice() + (list.length ? list.map((x) => {
-    const day = x.date.toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB", { day: "numeric", month: "long" });
+    const day = x.date.toLocaleDateString(loc(), { day: "numeric", month: "long" });
     const when = x.inDays === 0 ? `🎉 ${t("today")}` : x.inDays === 1 ? t("tomorrow") : t("inDays").replace("{n}", x.inDays);
     const wish = encodeURIComponent(t("bdayWish").replace("{n}", nm(P(x.id))));
     return `<div class="req" style="grid-template-columns:56px 1fr auto;align-items:center">
@@ -2417,7 +2654,7 @@ async function renderGreet(body, focusKey = null) {
   let bdays = [];
   if (isMember) { try { bdays = upcomingBirthdays(await loadAllDetails(), 30).map(birthdayContent); } catch (e) { console.error(e); } }
   const all = [fri, ...bdays, ...occ];
-  const fmtD = (d) => d.toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
+  const fmtD = (d) => d.toLocaleDateString(loc(), { weekday: "long", day: "numeric", month: "long" });
   body.innerHTML = `
     <p class="sub">${t("greetSub")}</p>
     <div class="greet-list">${all.map((c, i) => `<button class="greet-item" data-g="${i}"><span class="ge">${c.emoji}</span>
@@ -2487,7 +2724,7 @@ document.getElementById("vRadial").onclick = () => setView("radial");
 document.getElementById("btnWho").onclick = () => welcome(true);
 document.getElementById("btnDiwan").onclick = () => openDiwan();
 document.getElementById("btnLang").onclick = () => {
-  lang = lang === "ar" ? "en" : "ar";
+  lang = { ar: "en", en: "de", de: "ar" }[lang] || "ar";
   try { localStorage.setItem("ft-lang", lang); } catch (e) { /* storage blocked */ }
   applyLang(); render(false); if (selected) openPanel(selected);
 };
