@@ -532,6 +532,8 @@ const T = {
     thatsMe: "هذا أنا",
     notYetButFather: "لست في الشجرة بعد، لكن وجدنا أباك. أضف نفسك تحته:",
     addMeHere: "أضفني هنا",
+    familyGmail: "للعائلة: سجّل الدخول بحساب Gmail أولًا.",
+    joinAuto: "أرسلنا طلب انضمامك، وسيوافق عليه أحد المشرفين قريبًا.",
     notFound: "لم نجد هذا الاسم. جرّب كتابة الأسماء بطريقة أخرى (بالعربية أو الإنجليزية)، أو تصفّح الشجرة وأرسل طلبًا من بطاقة أبيك.",
     nowAddInfo: "هذا مكانك في الشجرة 🌳",
     helloName: "أهلًا {n}!",
@@ -711,6 +713,8 @@ const T = {
     thatsMe: "That's me",
     notYetButFather: "You're not in the tree yet, but we found your father. Add yourself under him:",
     addMeHere: "Add me here",
+    familyGmail: "Family members sign in with their Gmail first.",
+    joinAuto: "Your join request was sent; an admin will approve it soon.",
     notFound: "We couldn't find that name. Try another spelling (Arabic or English), or browse the tree and send a request from your father's card.",
     nowAddInfo: "This is your place in the tree 🌳",
     helloName: "Hello {n}!",
@@ -957,6 +961,8 @@ const T = {
     thatsMe: "Das bin ich",
     notYetButFather: "Du bist noch nicht im Stammbaum, aber wir haben deinen Vater gefunden. Füge dich unter ihm hinzu:",
     addMeHere: "Mich hier hinzufügen",
+    familyGmail: "Familienmitglieder melden sich zuerst mit Gmail an.",
+    joinAuto: "Deine Beitrittsanfrage wurde gesendet; ein Admin bestätigt sie bald.",
     notFound: "Wir haben diesen Namen nicht gefunden. Versuche eine andere Schreibweise (Arabisch oder lateinisch) oder sende eine Anfrage über die Karte deines Vaters.",
     nowAddInfo: "Das ist dein Platz im Stammbaum 🌳",
     helloName: "Hallo {n}!",
@@ -2086,11 +2092,12 @@ function welcome(force = false) {
       <button class="opt" data-w="father"><b>👨 ${t("viaFather")}</b><span>${t("viaFatherSub")}</span></button>
       <button class="opt" data-w="mother"><b>👩 ${t("viaMother")}</b><span>${t("viaMotherSub")}</span></button>
     </div>
+    <p class="sub" style="text-align:center">🔐 ${t("familyGmail")}</p>
     <div class="foot" style="justify-content:center"><button class="btn" data-w="browse">${t("justBrowse")}</button></div>`);
   sheet.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => {
     const w = b.dataset.w;
     if (w === "browse") { done(); closeModal(); return; }
-    askNames(w, done);
+    withSignIn(() => askNames(w, done));
   }));
 }
 
@@ -2141,6 +2148,7 @@ function askNames(side, done) {
         done(); closeModal(); select(meId);
         try { localStorage.setItem("ft-me", meId); } catch (er) { /* storage blocked */ }
         render(false);
+        autoJoin(meId);
         setTimeout(() => { if (selected === meId) openInfoPrompt(meId); }, 1600);
       }
       if (under) {
@@ -2284,22 +2292,31 @@ async function gate(body, tab) {
   body.querySelector("#jSend").onclick = async () => {
     const pid = pickerValue("jMe"), note = body.querySelector("#jNote").value.trim();
     if (!pid && !note) { toast(t("joinNeedWho")); return; }
-    const data = { uid: user.uid, name: user.displayName || user.email, email: user.email, createdAt: serverTimestamp() };
-    if (pid) data.personId = pid;
-    if (note) data.note = note;
-    if (user.photoURL) data.photo = user.photoURL.slice(0, 500);
-    try {
-      await setDoc(doc(db, "joinRequests", user.uid), data);
-      notifyText(`Family tree: ${data.name} asks to join`, [
-        `${data.name} <${data.email}> asks to join the family section.`,
-        pid ? `Says they are: ${P(pid).ar || ""} / ${P(pid).en || ""} (${lineage(pid).slice(1, 4).map((a) => P(a).en).join(" < ")})` : "",
-        note ? `Message: ${note}` : "",
-        "", `Approve or reject: ${location.origin}${location.pathname}?inbox=1`,
-      ]);
-      toast(t("joinSent")); confetti(); openDiwan(tab);
-    } catch (e) { console.error(e); toast(t("err")); }
+    if (await sendJoinRequest(pid, note)) { toast(t("joinSent")); confetti(); openDiwan(tab); }
   };
   return false;
+}
+async function sendJoinRequest(pid, note) {
+  const data = { uid: user.uid, name: user.displayName || user.email, email: user.email, createdAt: serverTimestamp() };
+  if (pid) data.personId = pid;
+  if (note) data.note = note;
+  if (user.photoURL) data.photo = user.photoURL.slice(0, 500);
+  try {
+    await setDoc(doc(db, "joinRequests", user.uid), data);
+    notifyText(`Family tree: ${data.name} asks to join`, [
+    `${data.name} <${data.email}> asks to join the family section.`,
+    pid ? `Says they are: ${P(pid).ar || ""} / ${P(pid).en || ""} (${lineage(pid).slice(1, 4).map((a) => P(a).en).join(" < ")})` : "",
+    note ? `Message: ${note}` : "",
+    "", `Approve or reject: ${location.origin}${location.pathname}?inbox=1`,
+    ]);
+    return true;
+  } catch (e) { console.error(e); toast(t("err")); return false; }
+}
+// "That's me" from the welcome: a signed-in, not-yet-approved visitor gets a join request for that person
+async function autoJoin(pid) {
+  if (!user || isMember) return;
+  try { if ((await getDoc(doc(db, "joinRequests", user.uid))).exists()) return; } catch (e) { console.error(e); return; }
+  if (await sendJoinRequest(pid, "")) toast(t("joinAuto"));
 }
 
 /* ---------- birthdays ---------- */
