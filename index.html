@@ -575,6 +575,7 @@ const T = {
     privateNoticeShort: "خاص بأفراد العائلة الموثّقين فقط — لا تنشرها خارج العائلة.",
     gateSignIn: "سجّل الدخول بحساب Google، ثم اطلب الانضمام كفرد من العائلة.",
     joinTitle: "اطلب الانضمام إلى العائلة",
+    membersOnlyEdit: "الإضافة والتعديل لأفراد العائلة الموثّقين فقط. أرسل طلب انضمام، وبعد موافقة أحمد أو أحد المسؤولين تستطيع الإضافة والتعديل.",
     joinSub: "أخبرنا من أنت. يصل طلبك إلى أحمد، وبعد التحقق والموافقة ترى الدردشة والصور والفيديو.",
     joinWho: "من أنت في الشجرة؟ (اختر اسمك إن وُجد)",
     joinNote: "عرّف بنفسك",
@@ -756,6 +757,7 @@ const T = {
     privateNoticeShort: "For verified family members only — please don't share outside the family.",
     gateSignIn: "Sign in with Google, then ask to join as a family member.",
     joinTitle: "Ask to join the family",
+    membersOnlyEdit: "Adding and editing is for verified family members only. Send a join request; once Ahmad or an admin approves it, you can add and edit.",
     joinSub: "Tell us who you are. Your request goes to Ahmad; once verified and approved you'll see the chat, photos and videos.",
     joinWho: "Who are you in the tree? (pick your name if it's there)",
     joinNote: "Introduce yourself",
@@ -1004,6 +1006,7 @@ const T = {
     privateNoticeShort: "Nur für bestätigte Familienmitglieder — bitte nicht außerhalb der Familie teilen.",
     gateSignIn: "Melde dich mit Google an und bitte dann um Aufnahme als Familienmitglied.",
     joinTitle: "Aufnahme in die Familie beantragen",
+    membersOnlyEdit: "Hinzufügen und Bearbeiten ist nur für bestätigte Familienmitglieder. Sende eine Beitrittsanfrage; sobald Ahmad oder ein Admin sie bestätigt, kannst du hinzufügen und bearbeiten.",
     joinSub: "Sag uns, wer du bist. Deine Anfrage geht an Ahmad; nach Prüfung und Freigabe siehst du Chat, Fotos und Videos.",
     joinWho: "Wer bist du im Stammbaum? (wähle deinen Namen, falls vorhanden)",
     joinNote: "Stell dich vor",
@@ -1113,6 +1116,7 @@ let photos = {};          // id -> dataURL
 let user = null;
 let isOwner = false;
 let isAdmin = false;
+let rolesUid = null; // uid whose roles (owner/admin/member) have been probed
 let isMember = false; // admin-approved family member (members/{uid})
 let view = "tree";
 let selected = null;
@@ -1643,8 +1647,36 @@ async function createKids(parentId, { sons, daughters }) {
 }
 
 /* ================= family requests (Google sign-in required) ================= */
+// Add / edit / photo requests are for approved members only (rules enforce it too).
+// A signed-in non-member gets the join form instead, prefilled with who they are / what they wanted to add.
+async function memberCheck(type, id, pre = {}) {
+  for (let i = 0; i < 80 && user && rolesUid !== user.uid; i++) await new Promise((r) => setTimeout(r, 100));
+  if (isMember) return true;
+  let asked = false;
+  try { asked = (await getDoc(doc(db, "joinRequests", user.uid))).exists(); } catch (e) { console.error(e); }
+  if (asked) {
+    openModal(`<div style="text-align:center;font-size:40px;line-height:1">⏳</div><p class="sub" style="text-align:center">${t("joinPending")}</p>
+      <div class="foot" style="justify-content:center"><button class="btn" data-close>${t("later")}</button></div>`);
+    return false;
+  }
+  const who = type === "add" ? myPersonId() : (id || myPersonId());
+  const note = type === "add" && pre.name ? `${pre.name} — ${t("childOf")}: ${nm(P(id))}` : "";
+  openModal(`
+    <h3>👪 ${t("joinTitle")}</h3><p class="sub">🔐 ${t("membersOnlyEdit")}</p>
+    <div class="field"><label>${t("joinWho")}</label>${pickerHtml("mMe", who)}</div>
+    <div class="field"><label>${t("joinNote")}</label><textarea id="mNote" maxlength="500" placeholder="${t("joinNotePh")}">${esc(note)}</textarea></div>
+    <p class="sub">${t("sendingAs")} <b>${esc(user.displayName || "")}</b> · <span dir="ltr">${esc(user.email)}</span></p>
+    <div class="foot"><button class="btn" data-close>${t("later")}</button><button class="btn primary" id="mSend">📨 ${t("joinSend")}</button></div>`);
+  sheet.querySelector("#mSend").onclick = async () => {
+    const pid = pickerValue("mMe"), n = sheet.querySelector("#mNote").value.trim();
+    if (!pid && !n) { toast(t("joinNeedWho")); return; }
+    if (await sendJoinRequest(pid, n)) { toast(t("joinSent")); confetti(); closeModal(); }
+  };
+  return false;
+}
 async function requestForm(type, id, pre = {}) {
   if (!user) return;
+  if (!(await memberCheck(type, id, pre))) return;
   const p = P(id);
   const cur = await getDetails(id) || {};
   let photo = null;
@@ -3144,6 +3176,7 @@ onAuthStateChanged(auth, async (u) => {
     isMember = isAdmin;
     if (!isMember) { try { isMember = (await getDoc(doc(db, "members", u.uid))).exists(); } catch (e) { isMember = false; } }
   }
+  rolesUid = u ? u.uid : null;
   const btn = document.getElementById("btnOwner");
   btn.innerHTML = u
     ? `<span class="me-chip">${u.photoURL ? `<img alt="" src="${esc(u.photoURL)}" referrerpolicy="no-referrer">` : "👤"}<span class="lbl">${esc((u.displayName || u.email).split(" ")[0])}</span></span>`
