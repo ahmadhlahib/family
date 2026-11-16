@@ -269,6 +269,54 @@ html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
 }
 .confetti { position: fixed; z-index: 70; pointer-events: none; width: 9px; height: 14px; border-radius: 2px; }
 
+/* diwan */
+.private-note { display: flex; gap: 8px; align-items: flex-start; padding: 10px 14px; margin-bottom: 12px; border-radius: 14px;
+  background: color-mix(in srgb, var(--gold2) 22%, var(--card)); border: 1px solid var(--gold); font-size: 13px; line-height: 1.6; }
+.private-note.small { margin: 8px 0 0; font-size: 12px; }
+.chat { height: min(46vh, 460px); overflow: auto; padding: 8px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.msg { display: flex; gap: 8px; align-items: flex-end; max-width: 88%; }
+.msg.mine { align-self: flex-end; flex-direction: row-reverse; }
+.msg .av { width: 34px; height: 34px; flex: none; border-radius: 50%; overflow: hidden; background: var(--green); color: #fff; display: grid; place-items: center; font-weight: 700; }
+.msg .av img { width: 100%; height: 100%; object-fit: cover; }
+.bubble { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 8px 12px; box-shadow: 0 2px 8px rgba(60, 45, 20, .06); }
+.msg.mine .bubble { background: color-mix(in srgb, var(--green) 14%, var(--card)); }
+.bubble .hd { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 13px; }
+.bubble .who { font-size: 11px; } .bubble .who a { color: var(--green); cursor: pointer; text-decoration: none; }
+.bubble .tx { white-space: pre-wrap; word-break: break-word; margin: 3px 0; }
+.bubble .tm { font-size: 11px; color: var(--muted); }
+.bubble .tools button { border: 0; background: none; padding: 0 3px; opacity: .6; } .bubble .tools button:hover { opacity: 1; }
+.chat-compose { display: flex; gap: 8px; margin-top: 10px; align-items: stretch; }
+.chat-compose textarea { flex: 1; border-radius: 14px; border: 1px solid var(--line); background: var(--paper); padding: 10px 12px; resize: none; outline: none; }
+.album-add { display: grid; gap: 8px; margin-bottom: 12px; }
+.album-add input { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); outline: none; width: 100%; }
+.video-row { display: flex; gap: 8px; }
+.album { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.tile { position: relative; aspect-ratio: 1; border: 0; padding: 0; border-radius: 14px; overflow: hidden; background: var(--bg2); }
+.tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.tile:hover img { transform: scale(1.06); }
+.tile .vid { font-size: 40px; }
+.tile .play { position: absolute; inset: 0; margin: auto; width: 46px; height: 46px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; display: grid; place-items: center; }
+.tile .cap { position: absolute; inset: auto 0 0 0; padding: 14px 8px 6px; font-size: 12px; color: #fff; text-align: start; background: linear-gradient(transparent, rgba(0,0,0,.65)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lightbox { position: fixed; inset: 0; z-index: 80; background: rgba(10, 8, 4, .88); display: grid; place-items: center; padding: 16px; animation: fade .2s; }
+.lb-inner { width: min(1000px, 100%); }
+.lb-media { display: grid; place-items: center; color: #fff; min-height: 200px; }
+.lb-media img { max-width: 100%; max-height: 74vh; border-radius: 14px; }
+.lb-media iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 14px; background: #000; }
+.lb-bar { display: flex; justify-content: space-between; gap: 10px; align-items: center; color: #fff; margin-top: 10px; flex-wrap: wrap; }
+.lb-bar .btn { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.25); }
+.lightbox .private-note { color: #2a2620; }
+.rel-card { text-align: center; padding: 16px; border-radius: 18px; background: var(--bg); border: 1px solid var(--line); margin-top: 10px; }
+.rel-people { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.rel-link { font-size: 30px; animation: pulse2 1.6s ease-in-out infinite; }
+@keyframes pulse2 { 50% { transform: scale(1.18); } }
+.mini { display: grid; justify-items: center; gap: 4px; max-width: 170px; }
+.mini .pic { width: 62px; height: 62px; border-radius: 50%; overflow: hidden; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 24px; font-weight: 700; }
+.mini .pic img { width: 100%; height: 100%; object-fit: cover; }
+.mini span { font-size: 12px; color: var(--muted); }
+.rel-text { font-size: 18px; margin: 14px 0; } .rel-text b { color: var(--green); }
+.join { padding: 4px; }
+.req .pic img { width: 100%; height: 100%; object-fit: cover; }
+
 @media (prefers-reduced-motion: reduce) {
   .leaf, .me-pulse, .loader .sprout * { animation: none !important; }
   .panel, .toast { transition: none; }
@@ -314,6 +362,7 @@ html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
     <button id="vTree" class="on" data-t="viewTree"></button>
     <button id="vRadial" data-t="viewCircle"></button>
   </div>
+  <button class="btn primary" id="btnDiwan"><span aria-hidden="true">🏡</span><span class="lbl" data-t="diwan"></span></button>
   <button class="btn gold" id="btnWho"><span aria-hidden="true">👋</span><span class="lbl" data-t="whoAmI"></span></button>
   <button class="btn" id="btnPoster"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 15l3-3 2 2 3-4"/></svg><span class="lbl" data-t="poster"></span></button>
   <button class="btn" id="btnLang">EN</button>
@@ -368,7 +417,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, onSnapshot, setDoc, updateDoc, deleteField, collection, getDocs, deleteDoc,
-  addDoc, query, where, limit, serverTimestamp,
+  addDoc, query, where, limit, orderBy, serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Owner = the one account the Firestore rules let read the requests inbox (checked server-side).
@@ -416,7 +465,7 @@ const T = {
     email: "البريد الإلكتروني",
     dob: "تاريخ الميلاد",
     info: "نبذة (تظهر للجميع)",
-    privateHint: "الهاتف وواتساب والبريد وتاريخ الميلاد تظهر فقط لأفراد العائلة بعد تسجيل الدخول بحساب Google.",
+    privateHint: "الهاتف وواتساب والبريد وتاريخ الميلاد تظهر فقط لأفراد العائلة الموثّقين.",
     msgToAdmin: "رسالة للمسؤول (اختياري)",
     sendingAs: "يُرسل الطلب باسم",
     badEmail: "البريد الإلكتروني غير صحيح",
@@ -425,7 +474,7 @@ const T = {
     admins: "المسؤولون",
     adminsSub: "يستطيع المسؤول الموافقة على الطلبات وتعديل الشجرة. أضف بريد Gmail الخاص به.",
     addAdmin: "إضافة مسؤول",
-    signInToSee: "سجّل الدخول لرؤية الهاتف والبريد وتاريخ الميلاد",
+    signInToSee: "الهاتف وواتساب وتاريخ الميلاد لأفراد العائلة الموثّقين فقط",
     signInForInbox: "سجّل الدخول بحساب Google لفتح الطلبات",
     welcomeTitle: "أهلًا بك في شجرة آل عمران",
     welcomeSub: "هل أنت من العائلة؟ اكتب اسمك واسم أبيك وجدّك لنجدك في الشجرة.",
@@ -468,6 +517,61 @@ const T = {
     foundMother: "وجدنا أمّك! أضف نفسك تحتها:",
     notMotherButGrand: "وجدنا جدّك لأمّك. أضف أمّك وزوجها وأنت معها بطلب واحد:",
     addMotherAndMe: "أضف أمّي وأنا",
+    diwan: "ديوان العائلة",
+    diwanSub: "مكان العائلة: دردشة، صور وفيديو، أعياد ميلاد، وتعرّف على أقاربك.",
+    dChat: "الدردشة",
+    dAlbum: "الصور والفيديو",
+    dRel: "ما صلة القرابة؟",
+    dBday: "أعياد الميلاد",
+    dMeet: "تعرّف على قريب",
+    dMembers: "الأعضاء",
+    privateNotice: "خاص بالعائلة فقط: لا يرى الدردشة والصور والفيديوهات وأرقام الهواتف وأعياد الميلاد وصور البنات إلا أفراد العائلة الموثّقون الذين وافق عليهم أحمد أو أحد المسؤولين. يُرجى عدم نشرها خارج العائلة.",
+    privateNoticeShort: "خاص بأفراد العائلة الموثّقين فقط — لا تنشرها خارج العائلة.",
+    gateSignIn: "سجّل الدخول بحساب Google، ثم اطلب الانضمام كفرد من العائلة.",
+    joinTitle: "اطلب الانضمام إلى العائلة",
+    joinSub: "أخبرنا من أنت. يصل طلبك إلى أحمد، وبعد التحقق والموافقة ترى الدردشة والصور والفيديو.",
+    joinWho: "من أنت في الشجرة؟ (اختر اسمك إن وُجد)",
+    joinNote: "عرّف بنفسك",
+    joinNotePh: "مثال: أنا سارة بنت خالد، أمّي ليلى بنت حمدان",
+    joinSend: "أرسل طلب الانضمام",
+    joinNeedWho: "اختر اسمك أو عرّف بنفسك",
+    joinSent: "وصل طلبك! سيصلك الوصول بعد الموافقة 🌱",
+    joinPending: "طلب انضمامك قيد المراجعة. ستتمكن من الدخول بعد موافقة أحمد.",
+    joinRequests: "طلبات الانضمام",
+    membersList: "الأعضاء الموثّقون",
+    removeMember: "إزالة",
+    chatPh: "اكتب رسالة للعائلة…",
+    chatAs: "تكتب باسم",
+    chatEmpty: "لا رسائل بعد. كن أول من يسلّم على العائلة 👋",
+    edited: "معدّلة",
+    addPhotos: "أضف صورًا",
+    addVideo: "أضف فيديو",
+    videoPh: "رابط فيديو YouTube أو Google Drive",
+    captionPh: "وصف قصير (اختياري)",
+    videoHint: "للفيديو: ارفعه على YouTube كـ «غير مدرج» أو على Google Drive، ثم الصق الرابط هنا.",
+    badVideo: "الصق رابط YouTube أو Google Drive",
+    uploading: "جارٍ الرفع…",
+    albumEmpty: "الألبوم فارغ. شارك أول صورة عائلية 📸",
+    relFrom: "الشخص الأول",
+    relTo: "الشخص الثاني",
+    relGo: "ما صلة القرابة؟",
+    relPick: "اختر شخصين من القائمة",
+    relIs: "هو",
+    relShow: "أظهرهما في الشجرة",
+    relSame: "الشخص نفسه",
+    relHe: "صلته بك:",
+    today: "اليوم",
+    tomorrow: "غدًا",
+    inDays: "بعد {n} يوم",
+    turns: "يكمل",
+    sendWish: "هنّئه",
+    bdayWish: "كل عام وأنت بخير يا {n} 🎂🌳 — من شجرة آل عمران",
+    noBdays: "لا أعياد ميلاد خلال الشهر القادم (أو لم تُضف تواريخ الميلاد بعد).",
+    view: "عرض",
+    another: "قريب آخر",
+    meetHint: "اضغط «ابحث عن نفسك» لنريك صلة قرابتك بكل شخص.",
+    womenPhotosPrivate: "صور البنات والسيدات تظهر لأفراد العائلة الموثّقين فقط.",
+    relativeTo: "بالنسبة إلى",
   },
   en: {
     title: "Omran Family Tree", subtitle: "Our roots and branches through the generations", search: "Search a name…",
@@ -500,7 +604,7 @@ const T = {
     email: "Email",
     dob: "Date of birth",
     info: "About (visible to everyone)",
-    privateHint: "Phone, WhatsApp, email and date of birth are only shown to family members signed in with Google.",
+    privateHint: "Phone, WhatsApp, email and date of birth are only shown to verified family members.",
     msgToAdmin: "Message to the admin (optional)",
     sendingAs: "Sending as",
     badEmail: "That email address is not valid",
@@ -509,7 +613,7 @@ const T = {
     admins: "Admins",
     adminsSub: "Admins can approve requests and edit the tree. Add their Gmail address.",
     addAdmin: "Add admin",
-    signInToSee: "Sign in to see phone, email and date of birth",
+    signInToSee: "Phone, WhatsApp and birthday are for verified family members only",
     signInForInbox: "Sign in with Google to open the requests",
     welcomeTitle: "Welcome to the Omran family tree",
     welcomeSub: "Are you family? Type your name, your father's and your grandfather's names and we'll find you.",
@@ -552,6 +656,61 @@ const T = {
     foundMother: "We found your mother! Add yourself under her:",
     notMotherButGrand: "We found your mother's father. Add your mother, her husband and you in one request:",
     addMotherAndMe: "Add my mother and me",
+    diwan: "Family Diwan",
+    diwanSub: "The family's place: chat, photos & videos, birthdays, and getting to know relatives.",
+    dChat: "Chat",
+    dAlbum: "Photos & videos",
+    dRel: "How are we related?",
+    dBday: "Birthdays",
+    dMeet: "Meet a relative",
+    dMembers: "Members",
+    privateNotice: "Family only: the chat, photos, videos, phone numbers, birthdays and photos of women and girls are visible only to verified family members approved by Ahmad or an admin. Please don't share them outside the family.",
+    privateNoticeShort: "For verified family members only — please don't share outside the family.",
+    gateSignIn: "Sign in with Google, then ask to join as a family member.",
+    joinTitle: "Ask to join the family",
+    joinSub: "Tell us who you are. Your request goes to Ahmad; once verified and approved you'll see the chat, photos and videos.",
+    joinWho: "Who are you in the tree? (pick your name if it's there)",
+    joinNote: "Introduce yourself",
+    joinNotePh: "e.g. I'm Sara, daughter of Khaled; my mother is Laila daughter of Hamdan",
+    joinSend: "Send join request",
+    joinNeedWho: "Pick your name or introduce yourself",
+    joinSent: "Request sent! You'll get access once approved 🌱",
+    joinPending: "Your join request is being reviewed. You'll get access once Ahmad approves it.",
+    joinRequests: "Join requests",
+    membersList: "Verified members",
+    removeMember: "Remove",
+    chatPh: "Write to the family…",
+    chatAs: "Writing as",
+    chatEmpty: "No messages yet. Be the first to greet the family 👋",
+    edited: "edited",
+    addPhotos: "Add photos",
+    addVideo: "Add video",
+    videoPh: "YouTube or Google Drive video link",
+    captionPh: "Short caption (optional)",
+    videoHint: "For videos: upload to YouTube as \"Unlisted\" or to Google Drive, then paste the link here.",
+    badVideo: "Paste a YouTube or Google Drive link",
+    uploading: "Uploading…",
+    albumEmpty: "The album is empty. Share the first family photo 📸",
+    relFrom: "First person",
+    relTo: "Second person",
+    relGo: "How are they related?",
+    relPick: "Pick two people from the list",
+    relIs: "is",
+    relShow: "Show both in the tree",
+    relSame: "the same person",
+    relHe: "Relation to you:",
+    today: "today",
+    tomorrow: "tomorrow",
+    inDays: "in {n} days",
+    turns: "turns",
+    sendWish: "Send wishes",
+    bdayWish: "Happy birthday {n} 🎂🌳 — from the Omran family tree",
+    noBdays: "No birthdays in the next month (or no dates of birth added yet).",
+    view: "View",
+    another: "Another relative",
+    meetHint: "Tap \"Find yourself\" and we'll show how you're related to everyone.",
+    womenPhotosPrivate: "Photos of women and girls are shown to verified family members only.",
+    relativeTo: "relative to",
   },
 };
 let lang = "ar";
@@ -576,6 +735,7 @@ let photos = {};          // id -> dataURL
 let user = null;
 let isOwner = false;
 let isAdmin = false;
+let isMember = false; // admin-approved family member (members/{uid})
 let view = "tree";
 let selected = null;
 let collapsed = new Set();
@@ -680,7 +840,7 @@ function render(animate = false) {
   computeBranches();
   layout = computeLayout(view);
   const { nodes, root } = layout;
-  const hl = new Set(selected ? lineage(selected) : []);
+  const hl = new Set([...(selected ? lineage(selected) : []), ...(typeof extraHL === "undefined" ? [] : extraHL)]);
 
   // generation guides in circle view
   gGuides.selectAll("*").remove();
@@ -819,17 +979,18 @@ function expandTo(id) { lineage(id).slice(1).forEach((a) => collapsed.delete(a))
 const panel = document.getElementById("panel");
 function select(id, { zoomTo = true } = {}) {
   selected = id;
+  extraHL = new Set();
   expandTo(id);
   render(false);
   openPanel(id);
   if (zoomTo) focus(id, Math.max(0.8, d3.zoomTransform(svg.node()).k));
 }
-function closePanel() { panel.classList.remove("open"); selected = null; render(false); }
+function closePanel() { panel.classList.remove("open"); selected = null; extraHL = new Set(); render(false); }
 
 /* private details (phone, WhatsApp, email, date of birth): readable only when signed in */
 const detailsCache = {};
 async function getDetails(id) {
-  if (!user) return null;
+  if (!user || !isMember) return null;
   if (id in detailsCache) return detailsCache[id];
   try {
     const s = await getDoc(doc(db, "details", id));
@@ -840,8 +1001,9 @@ async function getDetails(id) {
 const waLink = (n) => "https://wa.me/" + String(n).replace(/[^\d]/g, "").replace(/^00/, "");
 async function renderContact(id) {
   const box = document.getElementById("pContact");
-  if (!user) {
-    box.innerHTML = `<button class="btn ghost" data-a="signin">🔒 ${t("signInToSee")}</button>`;
+  if (!isMember) {
+    box.innerHTML = `<button class="btn ghost" data-a="signin">🔒 ${t("signInToSee")}</button>`
+      + (P(id)?.gender === "f" ? `<p class="sub">📷 ${t("womenPhotosPrivate")}</p>` : "");
     return;
   }
   box.innerHTML = "";
@@ -911,7 +1073,7 @@ panel.addEventListener("click", (e) => {
   if (a === "photo") photoForm(id);
   if (a === "rmphoto") removePhoto(id);
   if (a === "del") deletePerson(id);
-  if (a === "signin") signInGoogle();
+  if (a === "signin") { if (user) openDiwan("chat"); else signInGoogle(); }
   // requests need a verified Google account: sign in first, then open the form
   const req = { rphoto: "photo", rchild: "add", redit: "edit" }[a];
   if (req) {
@@ -1150,6 +1312,8 @@ function notifyByEmail(r, id) {
 }
 
 /* ================= admin editing ================= */
+// women's and girls' photos live in a members-only collection
+const photoRef = (id, gender = P(id)?.gender) => doc(db, gender === "f" ? "photosPrivate" : "photos", id);
 const newId = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 async function saveDetails(id, det) {
   const priv = { phone: det.phone, wa: det.wa, pemail: det.pemail, dob: det.dob };
@@ -1199,8 +1363,12 @@ async function personForm({ mode, id, parent }) {
     try {
       await updateDoc(doc(db, "tree", "main"), { [`people.${target}`]: rec, updatedAt: serverTimestamp() });
       await saveDetails(target, det);
+      if (mode === "edit" && photos[target] && (p.gender || "m") !== rec.gender) {
+        await setDoc(photoRef(target, rec.gender), { data: photos[target] });
+        await deleteDoc(photoRef(target, p.gender || "m"));
+      }
       if (mode === "add") await createKids(target, readKids());
-      if (photo) { await setDoc(doc(db, "photos", target), { data: photo }); photos[target] = photo; }
+      if (photo) { await setDoc(photoRef(target, rec.gender), { data: photo }); photos[target] = photo; }
       closeModal(); toast(t("saved"));
       if (mode === "add") { confetti(); setTimeout(() => select(target), 300); } else if (selected === target) openPanel(target);
     } catch (e) { console.error(e); toast(t("err")); }
@@ -1213,18 +1381,18 @@ function photoForm(id) {
   wireDrop(sheet.querySelector("#phBox"), (u) => { photo = u; });
   sheet.querySelector("#phSave").onclick = async () => {
     if (!photo) { toast(t("needPhoto")); return; }
-    try { await setDoc(doc(db, "photos", id), { data: photo }); photos[id] = photo; closeModal(); toast(t("saved")); render(false); openPanel(id); } catch (e) { console.error(e); toast(t("err")); }
+    try { await setDoc(photoRef(id), { data: photo }); photos[id] = photo; closeModal(); toast(t("saved")); render(false); openPanel(id); } catch (e) { console.error(e); toast(t("err")); }
   };
 }
 async function removePhoto(id) {
-  try { await deleteDoc(doc(db, "photos", id)); delete photos[id]; render(false); openPanel(id); toast(t("deleted")); } catch (e) { console.error(e); toast(t("err")); }
+  try { await deleteDoc(photoRef(id)); delete photos[id]; render(false); openPanel(id); toast(t("deleted")); } catch (e) { console.error(e); toast(t("err")); }
 }
 async function deletePerson(id) {
   if (kidsOf(id).length) { toast(t("hasKids")); return; }
   if (id === tree.rootId || !confirm(t("confirmDel") + "\n" + nm(P(id)))) return;
   try {
     await updateDoc(doc(db, "tree", "main"), { [`people.${id}`]: deleteField(), updatedAt: serverTimestamp() });
-    if (photos[id]) { await deleteDoc(doc(db, "photos", id)); delete photos[id]; }
+    if (photos[id]) { await deleteDoc(photoRef(id)); delete photos[id]; }
     const par = P(id)?.parent; closePanel(); toast(t("deleted")); if (par) setTimeout(() => select(par), 300);
   } catch (e) { console.error(e); toast(t("err")); }
 }
@@ -1236,8 +1404,10 @@ async function loadPending() {
     const snap = await getDocs(query(collection(db, "requests"), where("status", "==", "pending")));
     pending = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
   } catch (e) { console.error(e); pending = []; }
+  await loadJoins();
   const b = document.getElementById("inboxCount");
-  b.textContent = pending.length; b.classList.toggle("hide", !pending.length);
+  const n = pending.length + joins.length;
+  b.textContent = n; b.classList.toggle("hide", !n);
 }
 function inbox() {
   const line = (id) => (P(id) ? `<b>${esc(nm(P(id)))}</b> <span class="meta">${esc(lineage(id).slice(1, 3).map((a) => nm(P(a))).join(" ← "))}</span>` : "—");
@@ -1262,8 +1432,9 @@ function inbox() {
       ${r.note ? `<div class="meta">“${esc(r.note)}”</div>` : ""}
       <div class="foot"><button class="btn primary" data-ok="${r.id}">✓ ${t("approve")}</button><button class="btn danger" data-no="${r.id}">✕ ${t("reject")}</button></div></div></div>`;
   }).join("");
-  openModal(`<h3>${t("inbox")}</h3><p class="sub">${t("inboxSub")}</p>${items || `<div class="empty">${t("noReq")}</div>`}
+  openModal(`<h3>${t("inbox")}</h3><p class="sub">${t("inboxSub")}</p>${joins.length ? `<p><button class="btn gold" id="goJoins">👥 ${joins.length} · ${t("joinRequests")}</button></p>` : ""}${items || `<div class="empty">${t("noReq")}</div>`}
     <div class="foot"><button class="btn" data-close>✕</button></div>`, true);
+  sheet.querySelector("#goJoins")?.addEventListener("click", () => openDiwan("members"));
   sheet.onclick = async (e) => {
     const ok = e.target.closest("[data-ok]")?.dataset.ok, no = e.target.closest("[data-no]")?.dataset.no;
     const rid = ok || no;
@@ -1284,7 +1455,7 @@ function inbox() {
           await updateDoc(doc(db, "tree", "main"), { [`people.${nid}`]: rec, updatedAt: serverTimestamp() });
           if (hasDet) await saveDetails(nid, det);
           await createKids(nid, { sons: r.sons, daughters: r.daughters });
-          if (r.photo) { await setDoc(doc(db, "photos", nid), { data: r.photo }); photos[nid] = r.photo; }
+          if (r.photo) { await setDoc(photoRef(nid, r.gender), { data: r.photo }); photos[nid] = r.photo; }
           focusId = nid;
         }
         if (r.type === "edit" && P(r.targetId)) {
@@ -1303,10 +1474,10 @@ function inbox() {
             Object.entries(det).forEach(([k, v]) => { if (v) merged[k] = v; });
             await saveDetails(r.targetId, merged);
           }
-          if (r.photo) { await setDoc(doc(db, "photos", r.targetId), { data: r.photo }); photos[r.targetId] = r.photo; }
+          if (r.photo) { await setDoc(photoRef(r.targetId, r.gender || P(r.targetId).gender), { data: r.photo }); photos[r.targetId] = r.photo; }
         }
         if (r.type === "photo" && r.photo && P(r.targetId)) {
-          await setDoc(doc(db, "photos", r.targetId), { data: r.photo }); photos[r.targetId] = r.photo;
+          await setDoc(photoRef(r.targetId), { data: r.photo }); photos[r.targetId] = r.photo;
         }
         await deleteDoc(doc(db, "requests", rid));
         toast(t("approved")); confetti();
@@ -1371,7 +1542,7 @@ async function importJson(file) {
     const data = JSON.parse(await file.text());
     if (!data.people || !data.rootId) throw new Error("bad file");
     await setDoc(doc(db, "tree", "main"), { rootId: data.rootId, meId: data.meId || null, people: data.people, updatedAt: serverTimestamp() });
-    if (data.photos) for (const [k, v] of Object.entries(data.photos)) await setDoc(doc(db, "photos", k), { data: v });
+    if (data.photos) for (const [k, v] of Object.entries(data.photos)) await setDoc(photoRef(k, data.people[k]?.gender), { data: v });
     closeModal(); toast(t("imported")); confetti();
   } catch (e) { console.error(e); toast(t("err")); }
 }
@@ -1581,6 +1752,430 @@ function openInfoPrompt(id) {
   sheet.querySelector("#iGo").onclick = () => withSignIn(() => requestForm("edit", id));
 }
 
+/* ================= family diwan: chat, album, relations, birthdays, meet, members ================= */
+// Chat, album, birthdays and contact details are for VERIFIED members only: a Google account that
+// an admin approved (members/{uid}). The Firestore rules enforce it; the page only mirrors it.
+let diwanTab = "chat";
+let chatUnsub = null, galleryUnsub = null;
+let chatMsgs = [], galleryItems = [];
+let joins = [];
+const myPersonId = () => { try { const m = localStorage.getItem("ft-me"); return m && P(m) ? m : null; } catch (e) { return null; } };
+const privateNotice = () => `<div class="private-note">🔒 ${t("privateNotice")}</div>`;
+
+/* ---------- how are two people related? ---------- */
+function relationText(a, b) {
+  if (!P(a) || !P(b)) return "";
+  if (a === b) return t("relSame");
+  const la = lineage(a), lb = lineage(b);
+  const lca = la.find((x) => lb.includes(x));
+  if (!lca) return "";
+  const da = la.indexOf(lca), db = lb.indexOf(lca);
+  const bf = P(b).gender === "f", ar = lang === "ar";
+  const g = (m, f) => (bf ? f : m);
+  const pa = P(la[1]);
+  if (da === 0) {
+    if (db === 1) return ar ? g("ابنه", "ابنته") : g("his son", "his daughter");
+    if (db === 2) return ar ? g("حفيده", "حفيدته") : g("his grandson", "his granddaughter");
+    return ar ? `من أحفاده (بعد ${db} أجيال)` : `a descendant, ${db} generations below`;
+  }
+  if (db === 0) {
+    if (da === 1) return ar ? g("أبوه", "أمّه") : g("his father", "his mother");
+    if (da === 2) return ar ? g("جدّه", "جدّته") : g("his grandfather", "his grandmother");
+    return ar ? `جدّه الأعلى (قبل ${da} أجيال)` : `an ancestor, ${da} generations up`;
+  }
+  const fatherSide = pa?.gender !== "f";
+  if (da === 1 && db === 1) return ar ? g("أخوه", "أخته") : g("his brother", "his sister");
+  if (da === 2 && db === 1) {
+    return ar ? (fatherSide ? g("عمّه", "عمّته") : g("خاله", "خالته"))
+      : (fatherSide ? g("his paternal uncle", "his paternal aunt") : g("his maternal uncle", "his maternal aunt"));
+  }
+  if (da === 1 && db === 2) {
+    const sib = P(lb[1]);
+    return ar ? `${g("ابن", "بنت")} ${sib?.gender === "f" ? "أخته" : "أخيه"}` : g("his nephew", "his niece");
+  }
+  if (da === 2 && db === 2) {
+    const unc = P(lb[1]);
+    const rel = fatherSide ? (unc?.gender === "f" ? "عمّته" : "عمّه") : (unc?.gender === "f" ? "خالته" : "خاله");
+    return ar ? `${g("ابن", "بنت")} ${rel}` : "his first cousin";
+  }
+  const deg = Math.min(da, db) - 1;
+  return ar ? `يجمعهما الجد ${nm(P(lca))} — ${da === db ? `أبناء عمومة من الدرجة ${deg}` : `بينهما ${Math.abs(da - db)} جيل`}`
+    : `common ancestor ${nm(P(lca))} — ${da === db ? `cousins of degree ${deg}` : `${Math.abs(da - db)} generation(s) apart`}`;
+}
+let extraHL = new Set();
+function showBoth(a, b) {
+  closeModal(); select(b, { zoomTo: false });
+  extraHL = new Set([...lineage(a), ...lineage(b)]);
+  render(false);
+  setTimeout(() => fit(), 50);
+}
+
+/* ---------- people picker ---------- */
+function pickerHtml(idAttr, value) {
+  return `<input id="${idAttr}" list="${idAttr}L" value="${esc(value ? nm(P(value)) + " · " + lineText(value, 3) : "")}" placeholder="${t("search")}">
+    <datalist id="${idAttr}L">${Object.keys(tree.people).map((k) => `<option data-id="${k}" value="${esc(nm(P(k)) + " · " + lineText(k, 3))}">`).join("")}</datalist>`;
+}
+function pickerValue(idAttr) {
+  const v = sheet.querySelector("#" + idAttr)?.value.trim();
+  const o = [...sheet.querySelectorAll(`#${idAttr}L option`)].find((x) => x.value === v);
+  return o?.dataset.id || null;
+}
+function personMini(id) {
+  return `<div class="mini"><div class="pic">${avatarHtml(id)}</div><b>${esc(nm(P(id)))}</b><span>${esc(lineText(id, 3))}</span></div>`;
+}
+
+/* ---------- membership gate ---------- */
+async function gate(body, tab) {
+  if (!user) {
+    body.innerHTML = `${privateNotice()}<div class="empty">${t("gateSignIn")}<div style="margin-top:12px"><button class="btn primary" data-signin>${t("signIn")}</button></div></div>`;
+    body.querySelector("[data-signin]").onclick = () => signInGoogle().then((ok) => ok && openDiwan(tab));
+    return false;
+  }
+  if (isMember) return true;
+  let asked = false;
+  try { asked = (await getDoc(doc(db, "joinRequests", user.uid))).exists(); } catch (e) { console.error(e); }
+  if (asked) { body.innerHTML = `${privateNotice()}<div class="empty">⏳ ${t("joinPending")}</div>`; return false; }
+  const me = myPersonId();
+  body.innerHTML = `${privateNotice()}
+    <div class="join">
+      <h3>👪 ${t("joinTitle")}</h3><p class="sub">${t("joinSub")}</p>
+      <div class="field"><label>${t("joinWho")}</label>${pickerHtml("jMe", me)}</div>
+      <div class="field"><label>${t("joinNote")}</label><textarea id="jNote" maxlength="500" placeholder="${t("joinNotePh")}"></textarea></div>
+      <p class="sub">${t("sendingAs")} <b>${esc(user.displayName || "")}</b> · <span dir="ltr">${esc(user.email)}</span></p>
+      <div class="foot"><button class="btn primary" id="jSend">📨 ${t("joinSend")}</button></div>
+    </div>`;
+  body.querySelector("#jSend").onclick = async () => {
+    const pid = pickerValue("jMe"), note = body.querySelector("#jNote").value.trim();
+    if (!pid && !note) { toast(t("joinNeedWho")); return; }
+    const data = { uid: user.uid, name: user.displayName || user.email, email: user.email, createdAt: serverTimestamp() };
+    if (pid) data.personId = pid;
+    if (note) data.note = note;
+    if (user.photoURL) data.photo = user.photoURL.slice(0, 500);
+    try {
+      await setDoc(doc(db, "joinRequests", user.uid), data);
+      notifyText(`Family tree: ${data.name} asks to join`, [
+        `${data.name} <${data.email}> asks to join the family section.`,
+        pid ? `Says they are: ${P(pid).ar || ""} / ${P(pid).en || ""} (${lineage(pid).slice(1, 4).map((a) => P(a).en).join(" < ")})` : "",
+        note ? `Message: ${note}` : "",
+        "", `Approve or reject: ${location.origin}${location.pathname}?inbox=1`,
+      ]);
+      toast(t("joinSent")); confetti(); openDiwan(tab);
+    } catch (e) { console.error(e); toast(t("err")); }
+  };
+  return false;
+}
+
+/* ---------- birthdays ---------- */
+let allDetails = null;
+async function loadAllDetails() {
+  if (allDetails) return allDetails;
+  try {
+    const snap = await getDocs(collection(db, "details"));
+    allDetails = {}; snap.forEach((d) => { allDetails[d.id] = d.data(); });
+  } catch (e) { console.error(e); return {}; }
+  return allDetails;
+}
+function upcomingBirthdays(details, days = 31) {
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  const out = [];
+  Object.entries(details).forEach(([id, d]) => {
+    if (!P(id) || !/^\d{4}-\d{2}-\d{2}$/.test(d.dob || "")) return;
+    const [y, m, dd] = d.dob.split("-").map(Number);
+    let next = new Date(now.getFullYear(), m - 1, dd);
+    if (next < now) next = new Date(now.getFullYear() + 1, m - 1, dd);
+    const inDays = Math.round((next - now) / 86400000);
+    if (inDays <= days) out.push({ id, inDays, age: next.getFullYear() - y, wa: d.wa, date: next });
+  });
+  return out.sort((a, b) => a.inDays - b.inDays);
+}
+
+/* ---------- the diwan modal ---------- */
+function stopFeeds() {
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  if (galleryUnsub) { galleryUnsub(); galleryUnsub = null; }
+}
+async function openDiwan(tab = diwanTab) {
+  diwanTab = tab;
+  stopFeeds();
+  const list = [["chat", "💬 " + t("dChat")], ["album", "📸 " + t("dAlbum")], ["rel", "🤝 " + t("dRel")], ["bday", "🎂 " + t("dBday")], ["meet", "✨ " + t("dMeet")]];
+  if (isAdmin) list.push(["members", `👥 ${t("dMembers")}${joins.length ? ` <span class="badge">${joins.length}</span>` : ""}`]);
+  const tabs = list.map(([k, l]) => `<button data-dt="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("");
+  openModal(`<h3>🏡 ${t("diwan")}</h3><p class="sub">${t("diwanSub")}</p><div class="tabs">${tabs}</div><div id="dBody"></div>`, true);
+  sheet.querySelectorAll("[data-dt]").forEach((b) => (b.onclick = () => openDiwan(b.dataset.dt)));
+  const body = sheet.querySelector("#dBody");
+  if (tab === "chat") return renderChat(body);
+  if (tab === "album") return renderAlbum(body);
+  if (tab === "rel") return renderRel(body);
+  if (tab === "bday") return renderBday(body);
+  if (tab === "meet") return renderMeet(body);
+  if (tab === "members") return renderMembers(body);
+}
+const modalObserver = new MutationObserver(() => { if (!modal.classList.contains("open")) stopFeeds(); });
+modalObserver.observe(modal, { attributes: true, attributeFilter: ["class"] });
+
+/* ---------- chat ---------- */
+async function renderChat(body) {
+  if (!(await gate(body, "chat"))) return;
+  body.innerHTML = `${privateNotice()}
+    <div class="chat" id="chatList"><div class="empty">…</div></div>
+    <div class="chat-compose">
+      <textarea id="chatText" maxlength="1000" rows="2" placeholder="${t("chatPh")}"></textarea>
+      <button class="btn primary" id="chatSend">${t("send")} ➤</button>
+    </div>
+    <p class="sub">${t("chatAs")} <b>${esc(user.displayName || user.email)}</b>${myPersonId() ? ` · ${esc(lineText(myPersonId(), 3))}` : ` · <a href="#" id="chatWho">${t("whoAmI")}</a>`}</p>`;
+  body.querySelector("#chatWho")?.addEventListener("click", (e) => { e.preventDefault(); welcome(true); });
+  const send = async () => {
+    const ta = body.querySelector("#chatText"); const text = ta.value.trim();
+    if (!text) return;
+    const btn = body.querySelector("#chatSend"); btn.disabled = true;
+    try {
+      const msg = { text, uid: user.uid, name: user.displayName || user.email, createdAt: serverTimestamp() };
+      if (user.photoURL) msg.photo = user.photoURL.slice(0, 500);
+      if (myPersonId()) msg.personId = myPersonId();
+      await addDoc(collection(db, "messages"), msg);
+      ta.value = "";
+    } catch (e) { console.error(e); toast(t("err")); }
+    btn.disabled = false; ta.focus();
+  };
+  body.querySelector("#chatSend").onclick = send;
+  body.querySelector("#chatText").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+  chatUnsub = onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(150)), (snap) => {
+    chatMsgs = snap.docs.map((d) => ({ id: d.id, ...d.data() })).reverse();
+    drawChat();
+  }, (e) => { console.error(e); const l = document.getElementById("chatList"); if (l) l.innerHTML = `<div class="empty">${t("err")}</div>`; });
+}
+function drawChat() {
+  const list = document.getElementById("chatList");
+  if (!list) return;
+  const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
+  list.innerHTML = chatMsgs.length ? chatMsgs.map((m) => {
+    const mine = m.uid === user?.uid;
+    const when = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString(lang === "ar" ? "ar-LB" : "en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+    const who = m.personId && P(m.personId) ? `<a data-go="${m.personId}">${esc(lineText(m.personId, 3))}</a>` : "";
+    const tools = (isAdmin || mine) ? `<span class="tools">${isAdmin ? `<button data-edit="${m.id}" title="${t("edit")}">✎</button>` : ""}<button data-delm="${m.id}" title="${t("del")}">🗑</button></span>` : "";
+    return `<div class="msg ${mine ? "mine" : ""}" data-m="${m.id}">
+      <div class="av">${m.photo ? `<img alt="" src="${esc(m.photo)}" referrerpolicy="no-referrer">` : esc([...(m.name || "?")][0])}</div>
+      <div class="bubble"><div class="hd"><b>${esc(m.name)}</b>${tools}</div>${who ? `<div class="who">${who}</div>` : ""}
+      <div class="tx" dir="auto">${esc(m.text)}</div><div class="tm">${when}${m.edited ? " · " + t("edited") : ""}</div></div></div>`;
+  }).join("") : `<div class="empty">${t("chatEmpty")}</div>`;
+  if (atBottom || !list.dataset.init) { list.scrollTop = list.scrollHeight; list.dataset.init = "1"; }
+  list.onclick = async (e) => {
+    const go = e.target.closest("[data-go]")?.dataset.go;
+    if (go) { closeModal(); select(go); return; }
+    const del = e.target.closest("[data-delm]")?.dataset.delm;
+    if (del) { try { await deleteDoc(doc(db, "messages", del)); toast(t("deleted")); } catch (er) { console.error(er); toast(t("err")); } return; }
+    const ed = e.target.closest("[data-edit]")?.dataset.edit;
+    if (ed) {
+      const m = chatMsgs.find((x) => x.id === ed); const box = list.querySelector(`[data-m="${ed}"] .tx`);
+      if (!m || !box) return;
+      box.innerHTML = `<textarea maxlength="1000" rows="3" style="width:100%">${esc(m.text)}</textarea><div class="foot" style="margin:4px 0 0"><button class="btn" data-x>${t("cancel")}</button><button class="btn primary" data-s>${t("save")}</button></div>`;
+      box.querySelector("[data-x]").onclick = drawChat;
+      box.querySelector("[data-s]").onclick = async () => {
+        const text = box.querySelector("textarea").value.trim(); if (!text) return;
+        try { await updateDoc(doc(db, "messages", ed), { text, edited: true }); toast(t("saved")); } catch (er) { console.error(er); toast(t("err")); }
+      };
+    }
+  };
+}
+
+/* ---------- album: photos (stored compressed) and video links ---------- */
+function resizeImage(file, max, quality) {
+  return new Promise((res, rej) => {
+    if (!file || !file.type.startsWith("image/")) { rej(new Error("not image")); return; }
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      const x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      res(c.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = rej; img.src = URL.createObjectURL(file);
+  });
+}
+async function albumPhoto(file) {
+  // full image must fit one Firestore document (< ~1 MB as text)
+  for (const [max, q] of [[1600, 0.82], [1400, 0.75], [1100, 0.7], [900, 0.65]]) {
+    const full = await resizeImage(file, max, q);
+    if (full.length < 900000) return { full, thumb: await resizeImage(file, 420, 0.72) };
+  }
+  throw new Error("too big");
+}
+function videoEmbed(url) {
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/);
+  if (yt) return { kind: "youtube", src: `https://www.youtube-nocookie.com/embed/${yt[1]}`, thumb: `https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg` };
+  const gd = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if (gd) return { kind: "drive", src: `https://drive.google.com/file/d/${gd[1]}/preview`, thumb: null };
+  return null;
+}
+async function renderAlbum(body) {
+  if (!(await gate(body, "album"))) return;
+  body.innerHTML = `${privateNotice()}
+    <div class="album-add">
+      <label class="btn gold">📷 ${t("addPhotos")}<input type="file" id="alFiles" accept="image/*" multiple hidden></label>
+      <div class="video-row"><input id="alVideo" dir="ltr" placeholder="${t("videoPh")}"><button class="btn" id="alVideoAdd">🎬 ${t("addVideo")}</button></div>
+      <input id="alCap" maxlength="300" placeholder="${t("captionPh")}">
+      <p class="sub">${t("videoHint")}</p>
+    </div>
+    <div class="album" id="alGrid"><div class="empty">…</div></div>`;
+  const cap = () => body.querySelector("#alCap").value.trim();
+  body.querySelector("#alFiles").onchange = async (e) => {
+    const files = [...e.target.files].slice(0, 10);
+    for (const f of files) {
+      try {
+        toast(t("uploading"));
+        const { full, thumb } = await albumPhoto(f);
+        const ref = await addDoc(collection(db, "gallery"), { type: "photo", thumb, caption: cap(), uid: user.uid, name: user.displayName || user.email, createdAt: serverTimestamp() });
+        await setDoc(doc(db, "galleryFull", ref.id), { data: full, uid: user.uid });
+      } catch (er) { console.error(er); toast(t("err")); }
+    }
+    body.querySelector("#alCap").value = ""; e.target.value = ""; toast(t("saved"));
+  };
+  body.querySelector("#alVideoAdd").onclick = async () => {
+    const url = body.querySelector("#alVideo").value.trim();
+    if (!videoEmbed(url)) { toast(t("badVideo")); return; }
+    try {
+      await addDoc(collection(db, "gallery"), { type: "video", url, caption: cap(), uid: user.uid, name: user.displayName || user.email, createdAt: serverTimestamp() });
+      body.querySelector("#alVideo").value = ""; body.querySelector("#alCap").value = ""; toast(t("saved"));
+    } catch (er) { console.error(er); toast(t("err")); }
+  };
+  galleryUnsub = onSnapshot(query(collection(db, "gallery"), orderBy("createdAt", "desc"), limit(120)), (snap) => {
+    galleryItems = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const grid = document.getElementById("alGrid"); if (!grid) return;
+    grid.innerHTML = galleryItems.length ? galleryItems.map((g) => {
+      const v = g.type === "video" ? videoEmbed(g.url) : null;
+      const img = g.type === "photo" ? g.thumb : v?.thumb;
+      return `<button class="tile" data-open="${g.id}">${img ? `<img alt="" src="${esc(img)}" loading="lazy">` : `<span class="vid">🎬</span>`}
+        ${g.type === "video" ? `<span class="play">▶</span>` : ""}<span class="cap">${esc(g.caption || g.name)}</span></button>`;
+    }).join("") : `<div class="empty">${t("albumEmpty")}</div>`;
+  }, (e) => { console.error(e); const g = document.getElementById("alGrid"); if (g) g.innerHTML = `<div class="empty">${t("err")}</div>`; });
+  body.querySelector("#alGrid").onclick = (e) => { const id = e.target.closest("[data-open]")?.dataset.open; if (id) openMedia(id); };
+}
+async function openMedia(id) {
+  const g = galleryItems.find((x) => x.id === id); if (!g) return;
+  const lb = document.createElement("div"); lb.className = "lightbox";
+  const canDel = isAdmin || g.uid === user?.uid;
+  const when = g.createdAt?.toDate ? g.createdAt.toDate().toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB") : "";
+  lb.innerHTML = `<div class="lb-inner"><div class="lb-media">⏳</div>
+    <div class="lb-bar"><span><b>${esc(g.name)}</b> · ${when}${g.caption ? " · " + esc(g.caption) : ""}</span>
+    <span>${canDel ? `<button class="btn danger" data-del>🗑 ${t("del")}</button>` : ""}<button class="btn" data-x>✕</button></span></div>
+    <div class="private-note small">🔒 ${t("privateNoticeShort")}</div></div>`;
+  document.body.appendChild(lb);
+  const close = () => lb.remove();
+  lb.onclick = (e) => { if (e.target === lb || e.target.closest("[data-x]")) close(); };
+  lb.querySelector("[data-del]")?.addEventListener("click", async () => {
+    try { if (g.type === "photo") await deleteDoc(doc(db, "galleryFull", id)); await deleteDoc(doc(db, "gallery", id)); close(); toast(t("deleted")); } catch (er) { console.error(er); toast(t("err")); }
+  });
+  const box = lb.querySelector(".lb-media");
+  if (g.type === "photo") {
+    try { const s = await getDoc(doc(db, "galleryFull", id)); box.innerHTML = `<img alt="" src="${esc(s.data()?.data || g.thumb)}">`; } catch (er) { box.innerHTML = `<img alt="" src="${esc(g.thumb)}">`; }
+  } else {
+    const v = videoEmbed(g.url);
+    box.innerHTML = v ? `<iframe src="${esc(v.src)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>` : `<a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(g.url)}</a>`;
+  }
+}
+
+/* ---------- how are we related ---------- */
+function renderRel(body, a = myPersonId() || (isOwner ? tree.meId : null), b = null) {
+  body.innerHTML = `
+    <div class="two"><div class="field"><label>${t("relFrom")}</label>${pickerHtml("rA", a)}</div>
+    <div class="field"><label>${t("relTo")}</label>${pickerHtml("rB", b)}</div></div>
+    <div class="foot" style="justify-content:flex-start"><button class="btn primary" id="rGo">🤝 ${t("relGo")}</button></div>
+    <div id="rOut"></div>`;
+  body.querySelector("#rGo").onclick = () => {
+    const x = pickerValue("rA"), y = pickerValue("rB");
+    const out = body.querySelector("#rOut");
+    if (!x || !y) { toast(t("relPick")); return; }
+    out.innerHTML = `<div class="rel-card">
+      <div class="rel-people">${personMini(x)}<div class="rel-link">🤝</div>${personMini(y)}</div>
+      <p class="rel-text">${esc(nm(P(y)))} <span>${t("relIs")}</span> <b>${esc(relationText(x, y))}</b> <span class="sub">(${t("relativeTo")} ${esc(nm(P(x)))})</span></p>
+      <button class="btn gold" id="rShow">🌳 ${t("relShow")}</button></div>`;
+    out.querySelector("#rShow").onclick = () => showBoth(x, y);
+  };
+}
+
+/* ---------- birthdays ---------- */
+async function renderBday(body) {
+  if (!(await gate(body, "bday"))) return;
+  body.innerHTML = `<div class="empty">…</div>`;
+  const list = upcomingBirthdays(await loadAllDetails());
+  body.innerHTML = privateNotice() + (list.length ? list.map((x) => {
+    const day = x.date.toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB", { day: "numeric", month: "long" });
+    const when = x.inDays === 0 ? `🎉 ${t("today")}` : x.inDays === 1 ? t("tomorrow") : t("inDays").replace("{n}", x.inDays);
+    const wish = encodeURIComponent(t("bdayWish").replace("{n}", nm(P(x.id))));
+    return `<div class="req" style="grid-template-columns:56px 1fr auto;align-items:center">
+      <div class="pic">${avatarHtml(x.id)}</div>
+      <div><b>${esc(nm(P(x.id)))}</b> · ${t("turns")} ${x.age}<div class="meta">🎂 ${esc(day)} · ${when}</div></div>
+      ${x.wa ? `<a class="btn gold" target="_blank" rel="noopener" href="${esc(waLink(x.wa))}?text=${wish}">💬 ${t("sendWish")}</a>` : `<button class="btn" data-go="${x.id}">${t("view")}</button>`}</div>`;
+  }).join("") : `<div class="empty">${t("noBdays")}</div>`);
+  body.onclick = (e) => { const go = e.target.closest("[data-go]")?.dataset.go; if (go) { closeModal(); select(go); } };
+}
+
+/* ---------- meet a relative ---------- */
+function renderMeet(body) {
+  const ids = Object.keys(tree.people);
+  const withPhoto = ids.filter((k) => photos[k]);
+  const pool = withPhoto.length >= 5 && Math.random() < 0.7 ? withPhoto : ids;
+  const id = pool[Math.floor(Math.random() * pool.length)];
+  const me = myPersonId() || (isOwner ? tree.meId : null);
+  const p = P(id);
+  body.innerHTML = `<div class="rel-card meet">
+    <div class="avatar" style="margin:6px auto 0;--branch:${colorOf(id)}">${avatarHtml(id)}</div>
+    <h2 style="margin:10px 0 0">${esc(nm(p))}</h2>
+    <p class="sub">${esc(lineText(id, 5))}</p>
+    ${p.note ? `<p class="note">${esc(p.note)}</p>` : ""}
+    ${me && me !== id ? `<p class="rel-text">${esc(nm(p))} ${t("relIs")} <b>${esc(relationText(me, id))}</b> <span class="sub">(${t("relativeTo")} ${esc(nm(P(me)))})</span></p>` : `<p class="sub">${t("meetHint")}</p>`}
+    <div class="foot" style="justify-content:center"><button class="btn" id="mNext">🎲 ${t("another")}</button><button class="btn primary" data-go="${id}">🌳 ${t("view")}</button></div></div>`;
+  body.querySelector("#mNext").onclick = () => renderMeet(body);
+  body.onclick = (e) => { const go = e.target.closest("[data-go]")?.dataset.go; if (go) { closeModal(); select(go); } };
+}
+
+/* ---------- members (admins): approve join requests, list / remove members ---------- */
+async function loadJoins() {
+  if (!isAdmin) { joins = []; return; }
+  try { joins = (await getDocs(collection(db, "joinRequests"))).docs.map((d) => ({ id: d.id, ...d.data() })); } catch (e) { console.error(e); joins = []; }
+}
+async function renderMembers(body) {
+  if (!isAdmin) return;
+  await loadJoins();
+  let members = [];
+  try { members = (await getDocs(collection(db, "members"))).docs.map((d) => ({ id: d.id, ...d.data() })); } catch (e) { console.error(e); }
+  const row = (m, btns) => `<div class="req" style="grid-template-columns:48px 1fr auto;align-items:center">
+    <div class="pic" style="width:48px;height:48px">${m.photo ? `<img alt="" src="${esc(m.photo)}" referrerpolicy="no-referrer">` : "👤"}</div>
+    <div><b>${esc(m.name)}</b> <span class="meta" dir="ltr">${esc(m.email || "")}</span>
+    ${m.personId && P(m.personId) ? `<div class="meta">🌳 ${esc(lineText(m.personId, 4))}</div>` : ""}${m.note ? `<div class="meta">“${esc(m.note)}”</div>` : ""}</div>
+    <div class="foot" style="margin:0">${btns}</div></div>`;
+  body.innerHTML = `
+    <h3>⏳ ${t("joinRequests")} (${joins.length})</h3>
+    ${joins.map((j) => row(j, `<button class="btn primary" data-ja="${j.id}">✓ ${t("approve")}</button><button class="btn danger" data-jr="${j.id}">✕</button>`)).join("") || `<p class="sub">—</p>`}
+    <h3 style="margin-top:18px">👪 ${t("membersList")} (${members.length})</h3>
+    ${members.map((m) => row(m, `<button class="btn danger" data-mr="${m.id}">${t("removeMember")}</button>`)).join("") || `<p class="sub">—</p>`}`;
+  body.onclick = async (e) => {
+    const ja = e.target.closest("[data-ja]")?.dataset.ja, jr = e.target.closest("[data-jr]")?.dataset.jr, mr = e.target.closest("[data-mr]")?.dataset.mr;
+    try {
+      if (ja) {
+        const j = joins.find((x) => x.id === ja);
+        const m = { name: j.name, email: j.email, approvedBy: user.email, approvedAt: serverTimestamp() };
+        if (j.photo) m.photo = j.photo; if (j.personId) m.personId = j.personId;
+        await setDoc(doc(db, "members", ja), m); await deleteDoc(doc(db, "joinRequests", ja));
+        toast(t("approved")); confetti();
+      }
+      if (jr) { await deleteDoc(doc(db, "joinRequests", jr)); toast(t("rejected")); }
+      if (mr) { await deleteDoc(doc(db, "members", mr)); toast(t("deleted")); }
+      if (ja || jr || mr) { await loadPending(); openDiwan("members"); }
+    } catch (er) { console.error(er); toast(t("err")); }
+  };
+}
+
+/* generic owner email (Web3Forms) */
+function notifyText(subject, lines) {
+  if (!WEB3FORMS_KEY) return;
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: "Omran Family Tree", replyto: user?.email, message: lines.filter((l) => l !== null && l !== undefined).join("\n") }),
+  }).catch((e) => console.error("email notify failed", e));
+}
+
 /* ================= misc controls ================= */
 document.getElementById("zIn").onclick = () => svg.transition().call(zoom.scaleBy, 1.35);
 document.getElementById("zOut").onclick = () => svg.transition().call(zoom.scaleBy, 1 / 1.35);
@@ -1598,6 +2193,7 @@ const setView = (v) => {
 document.getElementById("vTree").onclick = () => setView("tree");
 document.getElementById("vRadial").onclick = () => setView("radial");
 document.getElementById("btnWho").onclick = () => welcome(true);
+document.getElementById("btnDiwan").onclick = () => openDiwan();
 document.getElementById("btnLang").onclick = () => {
   lang = lang === "ar" ? "en" : "ar";
   try { localStorage.setItem("ft-lang", lang); } catch (e) { /* storage blocked */ }
@@ -1645,7 +2241,11 @@ function showEmpty() {
 async function loadPhotos() {
   try {
     const snap = await getDocs(collection(db, "photos"));
-    photos = {}; snap.forEach((d) => { photos[d.id] = d.data().data; });
+    const next = {}; snap.forEach((d) => { next[d.id] = d.data().data; });
+    if (isMember) {
+      try { (await getDocs(collection(db, "photosPrivate"))).forEach((d) => { next[d.id] = d.data().data; }); } catch (e) { console.error(e); }
+    }
+    photos = next;
     render(false); if (selected) openPanel(selected);
   } catch (e) { console.error(e); }
 }
@@ -1682,12 +2282,14 @@ if (LOCAL) {
 
 onAuthStateChanged(auth, async (u) => {
   user = u;
-  isOwner = false; isAdmin = false;
+  isOwner = false; isAdmin = false; isMember = false; allDetails = null;
   Object.keys(detailsCache).forEach((k) => delete detailsCache[k]);
   if (u) {
     // roles are decided by the Firestore rules: owner can list admins, admins can read requests
     try { await getDocs(query(collection(db, "admins"), limit(1))); isOwner = true; } catch (e) { isOwner = false; }
     try { await getDocs(query(collection(db, "requests"), limit(1))); isAdmin = true; } catch (e) { isAdmin = false; }
+    isMember = isAdmin;
+    if (!isMember) { try { isMember = (await getDoc(doc(db, "members", u.uid))).exists(); } catch (e) { isMember = false; } }
   }
   const btn = document.getElementById("btnOwner");
   btn.innerHTML = u
@@ -1697,6 +2299,7 @@ onAuthStateChanged(auth, async (u) => {
   btn.style.color = isAdmin ? "var(--gold)" : "";
   document.getElementById("btnInbox").classList.toggle("hide", !isAdmin);
   if (isAdmin) await loadPending();
+  if (tree && !LOCAL) loadPhotos();
   if (selected) openPanel(selected);
   if (!tree && modal.classList.contains("open") && sheet.textContent.includes(t("empty"))) showEmpty();
   if (isAdmin && new URLSearchParams(location.search).has("inbox")) { inbox(); history.replaceState(null, "", location.pathname); }
