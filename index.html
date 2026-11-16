@@ -5,7 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>شجرة آل عمران · Omran Family Tree</title>
-<meta name="description" content="شجرة عائلة آل عمران – Omran family tree">
+<meta name="description" content="شجرة عائلة آل عمران – ابحث عن اسمك وأضف صورتك ومعلوماتك">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ahmadellahib.dev/family/">
+<meta property="og:title" content="🌳 شجرة آل عمران · Omran Family Tree">
+<meta property="og:description" content="ابحث عن اسمك في الشجرة وأضف صورتك ومعلوماتك · Find yourself and add your photo">
+<meta property="og:image" content="https://ahmadellahib.dev/family/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%232f5d50'/%3E%3Cpath d='M32 50V30M32 36l-9-8M32 32l9-9' stroke='%23e3c26b' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3Ccircle cx='22' cy='26' r='6' fill='%23e3c26b'/%3E%3Ccircle cx='42' cy='21' r='6' fill='%23e3c26b'/%3E%3Ccircle cx='32' cy='18' r='5' fill='%23e3c26b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -178,6 +186,14 @@ html[lang="en"] .panel h2 { font-family: var(--disp-en); }
 .kids { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 14px; }
 .kids button { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 5px 11px; font-size: 13px; }
 .note { font-size: 14px; color: var(--muted); white-space: pre-wrap; margin: 0 0 12px; }
+.contact { display: grid; gap: 6px; margin: 0 0 14px; }
+.contact > div { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: var(--bg); font-size: 14px; text-align: start; }
+.contact span { color: var(--muted); font-size: 12px; }
+.contact b, .contact a { margin-inline-start: auto; color: var(--green); font-weight: 600; text-decoration: none; }
+.contact .btn { justify-content: center; width: 100%; }
+.me-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 160px; }
+.me-chip img { width: 22px; height: 22px; border-radius: 50%; }
+.me-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .actions { display: grid; gap: 8px; }
 .actions .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .actions .btn { justify-content: center; }
@@ -298,6 +314,7 @@ html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
     <button id="vTree" class="on" data-t="viewTree"></button>
     <button id="vRadial" data-t="viewCircle"></button>
   </div>
+  <button class="btn gold" id="btnWho"><span aria-hidden="true">👋</span><span class="lbl" data-t="whoAmI"></span></button>
   <button class="btn" id="btnPoster"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 15l3-3 2 2 3-4"/></svg><span class="lbl" data-t="poster"></span></button>
   <button class="btn" id="btnLang">EN</button>
   <button class="btn icon" id="btnTheme" aria-label="theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -331,6 +348,7 @@ html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
       <div><b id="pDesc"></b><span data-t="descendants"></span></div>
     </div>
     <p class="note" id="pNote"></p>
+    <div class="contact" id="pContact"></div>
     <div class="kids" id="pKidList"></div>
     <div class="actions" id="pActions"></div>
   </div>
@@ -349,7 +367,7 @@ html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, doc, onSnapshot, setDoc, updateDoc, deleteField, collection, getDocs, deleteDoc,
+  getFirestore, doc, getDoc, onSnapshot, setDoc, updateDoc, deleteField, collection, getDocs, deleteDoc,
   addDoc, query, where, limit, serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -374,7 +392,7 @@ const T = {
     descendants: "الذرية", loading: "نزرع الشجرة…", son: "بن", daughter: "بنت", you: "أنت",
     youAreOwner: "وضع المالك", suggestEdit: "اقترح تصحيحًا", addChild: "أضف ابنًا/ابنة",
     addPhoto: "أضف صورة", edit: "تعديل", del: "حذف", changePhoto: "تغيير الصورة", removePhoto: "حذف الصورة",
-    reqTitle: "أرسل طلبًا", reqSub: "يصل طلبك إلى أحمد، ويظهر في الشجرة بعد موافقته.",
+    reqTitle: "أرسل طلبًا", reqSub: "يصل طلبك إلى أحمد والمسؤولين، ويظهر في الشجرة بعد الموافقة.",
     tAdd: "إضافة شخص", tEdit: "تصحيح", tPhoto: "صورة",
     nameAr: "الاسم بالعربية", nameEn: "الاسم بالإنجليزية", gender: "الجنس", male: "ذكر", female: "أنثى",
     note: "ملاحظة (اختياري)", yourName: "اسمك", contact: "هاتف أو بريد (اختياري)",
@@ -388,12 +406,68 @@ const T = {
     posterTitle: "تصدير ملصق", posterSub: "ملف عالي الدقة للطباعة بحجم كبير.",
     pTree: "شجرة", pTreeSub: "عرض من الأعلى للأسفل", pCircle: "دائرة", pCircleSub: "الجذر في الوسط",
     pPng: "صورة PNG", pSvg: "ملف SVG (أي حجم)", pPrint: "طباعة / PDF", pLang: "لغة الملصق",
-    making: "نجهّز الملصق…", signIn: "دخول المالك", signOut: "خروج", notOwner: "هذا الحساب لا يملك صلاحية التعديل",
+    making: "نجهّز الملصق…", signIn: "دخول", signOut: "خروج", notOwner: "هذا الحساب لا يملك صلاحية التعديل",
     empty: "لم تُنشر الشجرة بعد.", importJson: "استيراد الشجرة (JSON)", exportJson: "نسخة احتياطية (JSON)",
     imported: "تم نشر الشجرة 🌳", confirmDel: "حذف هذا الشخص؟", hasKids: "لا يمكن حذف شخص له أبناء. احذف الأبناء أولًا.",
     addRoot: "إضافة", editPerson: "تعديل الشخص", newChild: "ابن/ابنة جديد", posterBy: "شجرة عائلة آل عمران",
     err: "حدث خطأ، حاول مرة أخرى", owner: "المالك", lineageOf: "النسب", genN: "الجيل",
     bornYear: "سنة الولادة (اختياري)", deathYear: "سنة الوفاة (اختياري)", moveTo: "نقل تحت (اختياري)",
+    phone: "الهاتف",
+    email: "البريد الإلكتروني",
+    dob: "تاريخ الميلاد",
+    info: "نبذة (تظهر للجميع)",
+    privateHint: "الهاتف وواتساب والبريد وتاريخ الميلاد تظهر فقط لأفراد العائلة بعد تسجيل الدخول بحساب Google.",
+    msgToAdmin: "رسالة للمسؤول (اختياري)",
+    sendingAs: "يُرسل الطلب باسم",
+    badEmail: "البريد الإلكتروني غير صحيح",
+    adminMode: "وضع المسؤول",
+    member: "فرد من العائلة",
+    admins: "المسؤولون",
+    adminsSub: "يستطيع المسؤول الموافقة على الطلبات وتعديل الشجرة. أضف بريد Gmail الخاص به.",
+    addAdmin: "إضافة مسؤول",
+    signInToSee: "سجّل الدخول لرؤية الهاتف والبريد وتاريخ الميلاد",
+    signInForInbox: "سجّل الدخول بحساب Google لفتح الطلبات",
+    welcomeTitle: "أهلًا بك في شجرة آل عمران",
+    welcomeSub: "هل أنت من العائلة؟ اكتب اسمك واسم أبيك وجدّك لنجدك في الشجرة.",
+    yourFirstName: "اسمك",
+    fatherName: "اسم الأب",
+    grandName: "اسم الجد",
+    findMe: "ابحث عني",
+    justBrowse: "تصفّح فقط",
+    needMeFather: "اكتب اسمك واسم أبيك على الأقل",
+    foundYou: "وجدناك! اضغط على اسمك:",
+    thatsMe: "هذا أنا",
+    notYetButFather: "لست في الشجرة بعد، لكن وجدنا أباك. أضف نفسك تحته:",
+    addMeHere: "أضفني هنا",
+    notFound: "لم نجد هذا الاسم. جرّب كتابة الأسماء بطريقة أخرى (بالعربية أو الإنجليزية)، أو تصفّح الشجرة وأرسل طلبًا من بطاقة أبيك.",
+    nowAddInfo: "هذا مكانك في الشجرة 🌳",
+    helloName: "أهلًا {n}!",
+    addInfoSub: "أضف صورتك ورقم هاتفك وواتساب وتاريخ ميلادك لتكتمل بطاقتك. يصل طلبك إلى أحمد للموافقة.",
+    later: "لاحقًا",
+    addMyInfo: "أضف معلوماتي",
+    whoAmI: "ابحث عن نفسك",
+    spouseLabel: "اسم الزوج / الزوجة",
+    husband: "زوجها",
+    wife: "زوجته",
+    sonsNames: "أسماء الأبناء",
+    daughtersNames: "أسماء البنات",
+    commaHint: "افصل بين الأسماء بفاصلة",
+    hisMother: "أمّه",
+    herMother: "أمّها",
+    areYouFamily: "هل أنت من عائلة آل عمران؟",
+    viaFather: "نعم، من جهة الأب",
+    viaFatherSub: "أبي وجدّي من آل عمران",
+    viaMother: "نعم، من جهة الأم",
+    viaMotherSub: "أمّي من آل عمران",
+    back: "رجوع",
+    iAm: "أنا",
+    motherName: "اسم الأم",
+    motherFather: "اسم والد الأم (جدّك لأمّك)",
+    motherSideSub: "اكتب اسمك واسم أبيك واسم أمّك واسم والدها لنجدكم في الشجرة.",
+    needMother: "اكتب اسمك واسم أمّك واسم والدها",
+    foundMother: "وجدنا أمّك! أضف نفسك تحتها:",
+    notMotherButGrand: "وجدنا جدّك لأمّك. أضف أمّك وزوجها وأنت معها بطلب واحد:",
+    addMotherAndMe: "أضف أمّي وأنا",
   },
   en: {
     title: "Omran Family Tree", subtitle: "Our roots and branches through the generations", search: "Search a name…",
@@ -402,7 +476,7 @@ const T = {
     descendants: "Descendants", loading: "Growing the tree…", son: "son of", daughter: "daughter of", you: "You",
     youAreOwner: "Owner mode", suggestEdit: "Suggest a correction", addChild: "Add a child",
     addPhoto: "Add a photo", edit: "Edit", del: "Delete", changePhoto: "Change photo", removePhoto: "Remove photo",
-    reqTitle: "Send a request", reqSub: "Your request goes to Ahmad and appears in the tree once he approves it.",
+    reqTitle: "Send a request", reqSub: "Your request goes to Ahmad and the admins and appears in the tree once approved.",
     tAdd: "Add a person", tEdit: "Correction", tPhoto: "Photo",
     nameAr: "Name in Arabic", nameEn: "Name in English", gender: "Gender", male: "Male", female: "Female",
     note: "Note (optional)", yourName: "Your name", contact: "Phone or email (optional)",
@@ -416,12 +490,68 @@ const T = {
     posterTitle: "Export a poster", posterSub: "A high-resolution file for large printing.",
     pTree: "Tree", pTreeSub: "Top-down view", pCircle: "Circle", pCircleSub: "Root in the centre",
     pPng: "PNG image", pSvg: "SVG (any size)", pPrint: "Print / PDF", pLang: "Poster language",
-    making: "Preparing the poster…", signIn: "Owner sign-in", signOut: "Sign out", notOwner: "This account cannot edit the tree",
+    making: "Preparing the poster…", signIn: "Sign in", signOut: "Sign out", notOwner: "This account cannot edit the tree",
     empty: "The tree has not been published yet.", importJson: "Import tree (JSON)", exportJson: "Backup (JSON)",
     imported: "Tree published 🌳", confirmDel: "Delete this person?", hasKids: "A person with children cannot be deleted. Delete the children first.",
     addRoot: "Add", editPerson: "Edit person", newChild: "New child", posterBy: "Omran Family Tree",
     err: "Something went wrong, please try again", owner: "Owner", lineageOf: "Lineage", genN: "Generation",
     bornYear: "Year of birth (optional)", deathYear: "Year of death (optional)", moveTo: "Move under (optional)",
+    phone: "Phone",
+    email: "Email",
+    dob: "Date of birth",
+    info: "About (visible to everyone)",
+    privateHint: "Phone, WhatsApp, email and date of birth are only shown to family members signed in with Google.",
+    msgToAdmin: "Message to the admin (optional)",
+    sendingAs: "Sending as",
+    badEmail: "That email address is not valid",
+    adminMode: "Admin mode",
+    member: "Family member",
+    admins: "Admins",
+    adminsSub: "Admins can approve requests and edit the tree. Add their Gmail address.",
+    addAdmin: "Add admin",
+    signInToSee: "Sign in to see phone, email and date of birth",
+    signInForInbox: "Sign in with Google to open the requests",
+    welcomeTitle: "Welcome to the Omran family tree",
+    welcomeSub: "Are you family? Type your name, your father's and your grandfather's names and we'll find you.",
+    yourFirstName: "Your name",
+    fatherName: "Father's name",
+    grandName: "Grandfather's name",
+    findMe: "Find me",
+    justBrowse: "Just browse",
+    needMeFather: "Type at least your name and your father's name",
+    foundYou: "Found you! Tap your name:",
+    thatsMe: "That's me",
+    notYetButFather: "You're not in the tree yet, but we found your father. Add yourself under him:",
+    addMeHere: "Add me here",
+    notFound: "We couldn't find that name. Try another spelling (Arabic or English), or browse the tree and send a request from your father's card.",
+    nowAddInfo: "This is your place in the tree 🌳",
+    helloName: "Hello {n}!",
+    addInfoSub: "Add your photo, phone, WhatsApp and date of birth to complete your card. Ahmad approves it before it shows.",
+    later: "Later",
+    addMyInfo: "Add my info",
+    whoAmI: "Find yourself",
+    spouseLabel: "Husband / wife name",
+    husband: "Husband",
+    wife: "Wife",
+    sonsNames: "Sons' names",
+    daughtersNames: "Daughters' names",
+    commaHint: "Separate names with commas",
+    hisMother: "his mother",
+    herMother: "her mother",
+    areYouFamily: "Are you from the Omran family?",
+    viaFather: "Yes, through my father",
+    viaFatherSub: "My father and grandfather are Omran",
+    viaMother: "Yes, through my mother",
+    viaMotherSub: "My mother is from the Omran family",
+    back: "Back",
+    iAm: "I am",
+    motherName: "Mother's name",
+    motherFather: "Mother's father's name",
+    motherSideSub: "Type your name, your father's, your mother's and her father's names and we'll find you.",
+    needMother: "Type your name, your mother's and her father's names",
+    foundMother: "We found your mother! Add yourself under her:",
+    notMotherButGrand: "We found your mother's father. Add your mother, her husband and you in one request:",
+    addMotherAndMe: "Add my mother and me",
   },
 };
 let lang = "ar";
@@ -445,6 +575,7 @@ let tree = null;          // { rootId, meId, people: {id: {en, ar, parent, gende
 let photos = {};          // id -> dataURL
 let user = null;
 let isOwner = false;
+let isAdmin = false;
 let view = "tree";
 let selected = null;
 let collapsed = new Set();
@@ -453,6 +584,11 @@ let pending = [];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const nm = (p, l = lang) => (l === "ar" ? (p.ar || p.en) : (p.en || p.ar)) || "?";
 const P = (id) => tree?.people?.[id];
+function myId() {
+  let m = null;
+  try { m = localStorage.getItem("ft-me"); } catch (e) { /* storage blocked */ }
+  return m && P(m) ? m : tree?.meId;
+}
 const kidsOf = (id) => Object.entries(tree.people).filter(([, p]) => p.parent === id).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)).map(([k]) => k);
 function lineage(id, l = lang) {
   const out = [];
@@ -593,7 +729,7 @@ function render(animate = false) {
   const all = ne.merge(nd);
   all.classed("hl", (d) => hl.has(d.d.data.id)).classed("sel", (d) => d.d.data.id === selected)
     .attr("transform", (d) => `translate(${d.x},${d.y})`);
-  all.select(".ring").attr("stroke", (d) => colorOf(d.d.data.id));
+  all.select(".ring").attr("stroke", (d) => colorOf(d.d.data.id)).attr("stroke-dasharray", (d) => (P(d.d.data.id)?.gender === "f" ? "5 3" : null));
   all.select(".fillc").attr("fill", (d) => colorOf(d.d.data.id));
   all.select(".initial").attr("font-size", 20).text((d) => [...nm(P(d.d.data.id))][0]);
   all.select(".pic").each(function (d) {
@@ -642,7 +778,7 @@ function render(animate = false) {
   // "you" tag
   all.select(".me").each(function (d) {
     const g = d3.select(this); g.selectAll("*").remove();
-    if (d.d.data.id !== tree.meId) return;
+    if (d.d.data.id !== myId()) return;
     g.append("circle").attr("class", "me-pulse").attr("r", R + 4);
     const tg = g.append("g").attr("class", "me-tag").attr("transform", `translate(0,${-R - 12})`);
     tg.append("rect").attr("x", -20).attr("y", -9).attr("width", 40).attr("height", 18).attr("rx", 9);
@@ -689,6 +825,35 @@ function select(id, { zoomTo = true } = {}) {
   if (zoomTo) focus(id, Math.max(0.8, d3.zoomTransform(svg.node()).k));
 }
 function closePanel() { panel.classList.remove("open"); selected = null; render(false); }
+
+/* private details (phone, WhatsApp, email, date of birth): readable only when signed in */
+const detailsCache = {};
+async function getDetails(id) {
+  if (!user) return null;
+  if (id in detailsCache) return detailsCache[id];
+  try {
+    const s = await getDoc(doc(db, "details", id));
+    detailsCache[id] = s.exists() ? s.data() : {};
+  } catch (e) { console.error(e); detailsCache[id] = {}; }
+  return detailsCache[id];
+}
+const waLink = (n) => "https://wa.me/" + String(n).replace(/[^\d]/g, "").replace(/^00/, "");
+async function renderContact(id) {
+  const box = document.getElementById("pContact");
+  if (!user) {
+    box.innerHTML = `<button class="btn ghost" data-a="signin">🔒 ${t("signInToSee")}</button>`;
+    return;
+  }
+  box.innerHTML = "";
+  const d = await getDetails(id);
+  if (selected !== id || !d) return;
+  const rows = [];
+  if (d.dob) rows.push(`<div>🎂 <span>${t("dob")}</span><b dir="ltr">${esc(d.dob)}</b></div>`);
+  if (d.phone) rows.push(`<div>📞 <span>${t("phone")}</span><a dir="ltr" href="tel:${esc(d.phone.replace(/[^\d+]/g, ""))}">${esc(d.phone)}</a></div>`);
+  if (d.wa) rows.push(`<div>💬 <span>WhatsApp</span><a dir="ltr" target="_blank" rel="noopener" href="${esc(waLink(d.wa))}">${esc(d.wa)}</a></div>`);
+  if (d.pemail) rows.push(`<div>✉️ <span>${t("email")}</span><a dir="ltr" href="mailto:${esc(d.pemail)}">${esc(d.pemail)}</a></div>`);
+  box.innerHTML = rows.join("");
+}
 function avatarHtml(id) { const ph = photos[id]; return ph ? `<img alt="" src="${ph}">` : esc([...nm(P(id))][0]); }
 
 function openPanel(id) {
@@ -697,17 +862,22 @@ function openPanel(id) {
   const col = colorOf(id);
   panel.style.setProperty("--branch", col);
   document.getElementById("pAvatar").innerHTML = avatarHtml(id);
-  document.getElementById("pOwnerTag").classList.toggle("hide", !isOwner);
-  document.getElementById("pName").textContent = nm(p) + (id === tree.meId ? "  ⭐" : "");
+  document.getElementById("pOwnerTag").classList.toggle("hide", !isAdmin);
+  document.getElementById("pOwnerTag").textContent = isOwner ? t("youAreOwner") : t("adminMode");
+  document.getElementById("pName").textContent = nm(p) + (id === myId() ? "  ⭐" : "");
   const other = lang === "ar" ? p.en : p.ar;
   const years = [p.born, p.died].filter(Boolean).join(" – ");
-  document.getElementById("pAlt").textContent = [other, years].filter(Boolean).join(" · ");
+  const spouse = p.spouse ? `💍 ${p.gender === "f" ? t("husband") : t("wife")}: ${p.spouse}` : "";
+  document.getElementById("pAlt").textContent = [other, years, spouse].filter(Boolean).join(" · ");
   const line = lineage(id);
   document.getElementById("pLineage").innerHTML = line.map((a, i) => {
     const link = `<a data-go="${a}">${esc(nm(P(a)))}</a>`;
     if (i === 0) return link;
-    const prev = P(line[i - 1]);
-    return ` ${prev.gender === "f" ? t("daughter") : t("son")} ${link}`;
+    const child = P(line[i - 1]), par = P(a);
+    const rel = child.gender === "f" ? t("daughter") : t("son");
+    // through a daughter: "Ali son of Khaled, his mother Laila daughter of ..."
+    if (par.gender === "f") return ` ${rel} ${esc(par.spouse || "…")}، ${child.gender === "f" ? t("herMother") : t("hisMother")} ${link}`;
+    return ` ${rel} ${link}`;
   }).join("");
   document.getElementById("pGen").textContent = line.length;
   const kids = kidsOf(id);
@@ -715,8 +885,9 @@ function openPanel(id) {
   document.getElementById("pDesc").textContent = descCount(id);
   document.getElementById("pNote").textContent = p.note || "";
   document.getElementById("pKidList").innerHTML = kids.map((k) => `<button data-go="${k}">${esc(nm(P(k)))}</button>`).join("");
+  renderContact(id);
   const A = document.getElementById("pActions");
-  if (isOwner) {
+  if (isAdmin) {
     A.innerHTML = `
       <div class="row"><button class="btn primary" data-a="edit">✎ ${t("edit")}</button><button class="btn" data-a="child">＋ ${t("addChild")}</button></div>
       <div class="row"><button class="btn" data-a="photo">📷 ${photos[id] ? t("changePhoto") : t("addPhoto")}</button>
@@ -740,10 +911,21 @@ panel.addEventListener("click", (e) => {
   if (a === "photo") photoForm(id);
   if (a === "rmphoto") removePhoto(id);
   if (a === "del") deletePerson(id);
-  if (a === "rphoto") requestForm("photo", id);
-  if (a === "rchild") requestForm("add", id);
-  if (a === "redit") requestForm("edit", id);
+  if (a === "signin") signInGoogle();
+  // requests need a verified Google account: sign in first, then open the form
+  const req = { rphoto: "photo", rchild: "add", redit: "edit" }[a];
+  if (req) {
+    if (user) requestForm(req, id);
+    else signInGoogle().then((ok) => { if (ok) requestForm(req, id); });
+  }
 });
+async function signInGoogle() {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); return true; } catch (e) {
+    console.error(e);
+    if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") toast(t("err") + " (" + (e.code || "") + ")");
+    return false;
+  }
+}
 document.getElementById("pClose").onclick = closePanel;
 
 /* ================= search ================= */
@@ -838,9 +1020,49 @@ function wireDrop(root, onPhoto) {
 }
 const dropHtml = () => `<div class="drop"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg><span>${t("photoHint")}</span></div><input type="file" accept="image/*" hidden>`;
 
-/* ================= public requests ================= */
-function requestForm(type, id) {
+/* ================= shared person fields ================= */
+// info = public "about" text (stored as `note` in the tree); the rest is private (details/{id}).
+function detailFieldsHtml(v = {}) {
+  return `
+    <div class="field"><label>💍 ${t("spouseLabel")}</label><input id="xSpouse" maxlength="80" value="${esc(v.spouse)}"></div>
+    <div class="two"><div class="field"><label>📞 ${t("phone")}</label><input id="xPhone" type="tel" dir="ltr" maxlength="30" value="${esc(v.phone)}" placeholder="+961 …"></div>
+    <div class="field"><label>💬 WhatsApp</label><input id="xWa" type="tel" dir="ltr" maxlength="30" value="${esc(v.wa)}" placeholder="+961 …"></div></div>
+    <div class="two"><div class="field"><label>✉️ ${t("email")}</label><input id="xMail" type="email" dir="ltr" maxlength="120" value="${esc(v.pemail)}"></div>
+    <div class="field"><label>🎂 ${t("dob")}</label><input id="xDob" type="date" dir="ltr" value="${esc(v.dob)}"></div></div>
+    <div class="field"><label>${t("info")}</label><textarea id="xInfo" maxlength="2000">${esc(v.info)}</textarea></div>
+    <p class="sub">🔒 ${t("privateHint")}</p>`;
+}
+function readDetailFields() {
+  const g = (s) => sheet.querySelector(s)?.value.trim() || "";
+  return { spouse: g("#xSpouse"), phone: g("#xPhone"), wa: g("#xWa"), pemail: g("#xMail"), dob: g("#xDob"), info: g("#xInfo") };
+}
+const validMail = (s) => !s || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
+function kidsFieldsHtml(v = {}) {
+  return `<div class="two"><div class="field"><label>👦 ${t("sonsNames")}</label><input id="xSons" maxlength="400" value="${esc(v.sons)}" placeholder="${t("commaHint")}"></div>
+    <div class="field"><label>👧 ${t("daughtersNames")}</label><input id="xDaughters" maxlength="400" value="${esc(v.daughters)}" placeholder="${t("commaHint")}"></div></div>`;
+}
+function readKids() {
+  const g = (q) => sheet.querySelector(q)?.value.trim() || "";
+  return { sons: g("#xSons"), daughters: g("#xDaughters") };
+}
+const splitNames = (x) => String(x || "").split(/[,،\n]+/).map((n) => n.trim()).filter(Boolean).slice(0, 20);
+async function createKids(parentId, { sons, daughters }) {
+  let order = Math.max(0, ...Object.values(tree.people).map((x) => x.order || 0));
+  const upd = { updatedAt: serverTimestamp() };
+  [[sons, "m"], [daughters, "f"]].forEach(([list, gender]) => splitNames(list).forEach((n) => {
+    const rec = { gender, parent: parentId, order: ++order };
+    if (/[\u0600-\u06FF]/.test(n)) rec.ar = n; else rec.en = n;
+    upd[`people.${newId()}`] = rec;
+  }));
+  if (Object.keys(upd).length > 1) await updateDoc(doc(db, "tree", "main"), upd);
+}
+
+/* ================= family requests (Google sign-in required) ================= */
+async function requestForm(type, id, pre = {}) {
+  if (!user) return;
   const p = P(id);
+  const cur = await getDetails(id) || {};
   let photo = null;
   const tabs = ["add", "edit", "photo"].map((k) => `<button data-tab="${k}" class="${k === type ? "on" : ""}">${t({ add: "tAdd", edit: "tEdit", photo: "tPhoto" }[k])}</button>`).join("");
   openModal(`
@@ -851,52 +1073,93 @@ function requestForm(type, id) {
       <div class="two"><div class="field"><label>${t("nameAr")}</label><input id="rAr" maxlength="80" dir="rtl"></div>
       <div class="field"><label>${t("nameEn")}</label><input id="rEn" maxlength="80" dir="ltr"></div></div>
       <div class="field"><label>${t("gender")}</label><select id="rG"><option value="m">${t("male")}</option><option value="f">${t("female")}</option></select></div>
+      <div id="rDetails"></div>
     </div>
     <div class="field" id="rPhotoBox"><label>${t("tPhoto")}</label>${dropHtml()}</div>
-    <div class="field"><label>${t("note")}</label><textarea id="rNote" maxlength="1000"></textarea></div>
-    <div class="two"><div class="field"><label>${t("yourName")} *</label><input id="rBy" maxlength="80"></div>
-    <div class="field"><label>${t("contact")}</label><input id="rContact" maxlength="120"></div></div>
+    <div class="field"><label>${t("msgToAdmin")}</label><textarea id="rNote" maxlength="1000"></textarea></div>
+    <p class="sub">${t("sendingAs")} <b>${esc(user.displayName || "")}</b> · <span dir="ltr">${esc(user.email)}</span></p>
     <div class="foot"><button class="btn" data-close>${t("cancel")}</button><button class="btn primary" id="rSend">${t("send")}</button></div>`);
-  try { sheet.querySelector("#rBy").value = localStorage.getItem("ft-by") || ""; } catch (e) { /* storage blocked */ }
   wireDrop(sheet.querySelector("#rPhotoBox"), (u) => { photo = u; });
   const setTab = (k) => {
     type = k;
     sheet.querySelectorAll("[data-tab]").forEach((b) => b.classList.toggle("on", b.dataset.tab === k));
     sheet.querySelector("#rName").classList.toggle("hide", k === "photo");
     sheet.querySelector("#rTarget").textContent = k === "add" ? `${t("childOf")}: ${nm(p)}` : `${nm(p)} — ${lineage(id).slice(1, 3).map((a) => nm(P(a))).join(" ← ")}`;
-    if (k === "edit") { sheet.querySelector("#rAr").value = p.ar || ""; sheet.querySelector("#rEn").value = p.en || ""; sheet.querySelector("#rG").value = p.gender || "m"; }
-    if (k === "add") { sheet.querySelector("#rAr").value = ""; sheet.querySelector("#rEn").value = ""; sheet.querySelector("#rG").value = "m"; }
+    const edit = k === "edit";
+    sheet.querySelector("#rAr").value = edit ? p.ar || "" : "";
+    sheet.querySelector("#rEn").value = edit ? p.en || "" : "";
+    sheet.querySelector("#rG").value = edit ? p.gender || "m" : "m";
+    sheet.querySelector("#rDetails").innerHTML = detailFieldsHtml(edit ? { ...cur, info: p.note, spouse: p.spouse } : { spouse: pre.spouse })
+      + (k === "add" ? kidsFieldsHtml(pre) : "");
   };
   sheet.querySelectorAll("[data-tab]").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
   setTab(type);
+  if (pre.name) sheet.querySelector(/[\u0600-\u06FF]/.test(pre.name) ? "#rAr" : "#rEn").value = pre.name;
+  if (pre.gender) sheet.querySelector("#rG").value = pre.gender;
+  if (pre.note) sheet.querySelector("#rNote").value = pre.note;
   sheet.querySelector("#rSend").onclick = async () => {
-    const by = sheet.querySelector("#rBy").value.trim();
     const ar = sheet.querySelector("#rAr").value.trim(), en = sheet.querySelector("#rEn").value.trim();
     if (type !== "photo" && !ar && !en) { toast(t("needName")); return; }
-    if (type === "add" && !photo && false) return;
     if (type === "photo" && !photo) { toast(t("needPhoto")); return; }
-    if (!by) { toast(t("needYou")); sheet.querySelector("#rBy").focus(); return; }
+    const det = type === "photo" ? {} : readDetailFields();
+    if (!validMail(det.pemail)) { toast(t("badEmail")); return; }
     const data = {
-      type, status: "pending", by, lang, createdAt: serverTimestamp(),
-      note: sheet.querySelector("#rNote").value.trim(), contact: sheet.querySelector("#rContact").value.trim(),
+      type, status: "pending", lang, createdAt: serverTimestamp(),
+      by: user.displayName || user.email, byUid: user.uid, byEmail: user.email,
+      note: sheet.querySelector("#rNote").value.trim(),
     };
     if (type === "add") Object.assign(data, { parentId: id, ar, en, gender: sheet.querySelector("#rG").value });
     if (type === "edit") Object.assign(data, { targetId: id, ar, en, gender: sheet.querySelector("#rG").value });
-    if (type !== "edit" || photo) { if (photo) data.photo = photo; }
     if (type === "photo") data.targetId = id;
+    Object.entries(det).forEach(([k, v]) => { if (v) data[k] = v; });
+    if (type === "add") { const ks = readKids(); if (ks.sons) data.sons = ks.sons; if (ks.daughters) data.daughters = ks.daughters; }
+    if (photo) data.photo = photo;
+    Object.keys(data).forEach((k) => data[k] === "" && delete data[k]);
     const btn = sheet.querySelector("#rSend"); btn.disabled = true;
     try {
       await addDoc(collection(db, "requests"), data);
-      try { localStorage.setItem("ft-by", by); } catch (e) { /* storage blocked */ }
+      notifyByEmail(data, id);
       closeModal(); toast(t("sent")); confetti();
     } catch (e) { console.error(e); toast(t("err")); btn.disabled = false; }
   };
 }
 
-/* ================= owner editing ================= */
+/* Email the owner about a new request (Web3Forms; the key only allows sending to the owner's inbox). */
+const WEB3FORMS_KEY = "";
+function notifyByEmail(r, id) {
+  if (!WEB3FORMS_KEY) return;
+  const who = (pid) => (P(pid) ? `${P(pid).ar || ""} / ${P(pid).en || ""} (${lineage(pid).slice(1, 4).map((a) => P(a).en).join(" < ")})` : "-");
+  const kind = { add: "New person", edit: "Correction", photo: "New photo" }[r.type];
+  const lines = [
+    `${kind} request from ${r.by} <${r.byEmail}>`,
+    r.type === "add" ? `Add under: ${who(id)}` : `Person: ${who(id)}`,
+    r.ar || r.en ? `Name: ${r.ar || ""} / ${r.en || ""}` : "",
+    r.phone ? `Phone: ${r.phone}` : "", r.wa ? `WhatsApp: ${r.wa}` : "", r.pemail ? `Email: ${r.pemail}` : "",
+    r.dob ? `Date of birth: ${r.dob}` : "", r.spouse ? `Spouse: ${r.spouse}` : "",
+    r.sons ? `Sons: ${r.sons}` : "", r.daughters ? `Daughters: ${r.daughters}` : "", r.info ? `About: ${r.info}` : "", r.photo ? "Photo attached (see the inbox)" : "",
+    r.note ? `Message: ${r.note}` : "",
+    "", `Approve or reject: ${location.origin}${location.pathname}?inbox=1`,
+  ].filter(Boolean);
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY, subject: `Family tree: ${kind} from ${r.by}`, from_name: "Omran Family Tree",
+      replyto: r.byEmail, message: lines.join("\n"),
+    }),
+  }).catch((e) => console.error("email notify failed", e));
+}
+
+/* ================= admin editing ================= */
 const newId = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-function personForm({ mode, id, parent }) {
+async function saveDetails(id, det) {
+  const priv = { phone: det.phone, wa: det.wa, pemail: det.pemail, dob: det.dob };
+  Object.keys(priv).forEach((k) => !priv[k] && delete priv[k]);
+  await setDoc(doc(db, "details", id), priv);
+  detailsCache[id] = priv;
+}
+async function personForm({ mode, id, parent }) {
   const p = mode === "edit" ? P(id) : { gender: "m" };
+  const cur = mode === "edit" ? (await getDetails(id) || {}) : {};
   let photo = null;
   openModal(`
     <h3>${mode === "edit" ? t("editPerson") : t("newChild")}</h3>
@@ -904,9 +1167,8 @@ function personForm({ mode, id, parent }) {
     <div class="two"><div class="field"><label>${t("nameAr")}</label><input id="fAr" dir="rtl" value="${esc(p.ar)}"></div>
     <div class="field"><label>${t("nameEn")}</label><input id="fEn" dir="ltr" value="${esc(p.en)}"></div></div>
     <div class="two"><div class="field"><label>${t("gender")}</label><select id="fG"><option value="m">${t("male")}</option><option value="f" ${p.gender === "f" ? "selected" : ""}>${t("female")}</option></select></div>
-    <div class="two"><div class="field"><label>${t("bornYear")}</label><input id="fB" inputmode="numeric" maxlength="4" value="${esc(p.born)}"></div>
-    <div class="field"><label>${t("deathYear")}</label><input id="fD" inputmode="numeric" maxlength="4" value="${esc(p.died)}"></div></div></div>
-    <div class="field"><label>${t("note")}</label><textarea id="fN">${esc(p.note)}</textarea></div>
+    <div class="field"><label>${t("deathYear")}</label><input id="fD" inputmode="numeric" maxlength="4" value="${esc(p.died)}"></div></div>
+    ${detailFieldsHtml({ ...cur, info: p.note, spouse: p.spouse })}${mode === "add" ? kidsFieldsHtml() : ""}
     ${mode === "edit" && id !== tree.rootId ? `<div class="field"><label>${t("moveTo")}</label><input id="fMove" list="fMoveList" placeholder="${esc(nm(P(p.parent)))}"><datalist id="fMoveList">${Object.keys(tree.people).filter((k) => k !== id && !lineage(k).includes(id)).map((k) => `<option value="${esc(nm(P(k)) + " · " + lineage(k).slice(1, 3).map((a) => nm(P(a))).join(" ← "))}" data-id="${k}">`).join("")}</datalist></div>` : ""}
     ${mode === "add" ? `<div class="field" id="fPhotoBox"><label>${t("tPhoto")}</label>${dropHtml()}</div>` : ""}
     <div class="foot"><button class="btn" data-close>${t("cancel")}</button><button class="btn primary" id="fSave">${t("save")}</button></div>`);
@@ -914,10 +1176,13 @@ function personForm({ mode, id, parent }) {
   sheet.querySelector("#fSave").onclick = async () => {
     const ar = sheet.querySelector("#fAr").value.trim(), en = sheet.querySelector("#fEn").value.trim();
     if (!ar && !en) { toast(t("needName")); return; }
+    const det = readDetailFields();
+    if (!validMail(det.pemail)) { toast(t("badEmail")); return; }
     const rec = {
       ...(mode === "edit" ? p : {}), ar, en, gender: sheet.querySelector("#fG").value,
-      born: sheet.querySelector("#fB").value.trim(), died: sheet.querySelector("#fD").value.trim(), note: sheet.querySelector("#fN").value.trim(),
+      died: sheet.querySelector("#fD").value.trim(), note: det.info, spouse: det.spouse,
     };
+    delete rec.born;
     let target = id;
     if (mode === "add") {
       target = newId();
@@ -933,9 +1198,11 @@ function personForm({ mode, id, parent }) {
     Object.keys(rec).forEach((k) => rec[k] === "" && delete rec[k]);
     try {
       await updateDoc(doc(db, "tree", "main"), { [`people.${target}`]: rec, updatedAt: serverTimestamp() });
+      await saveDetails(target, det);
+      if (mode === "add") await createKids(target, readKids());
       if (photo) { await setDoc(doc(db, "photos", target), { data: photo }); photos[target] = photo; }
       closeModal(); toast(t("saved"));
-      if (mode === "add") { confetti(); setTimeout(() => select(target), 300); }
+      if (mode === "add") { confetti(); setTimeout(() => select(target), 300); } else if (selected === target) openPanel(target);
     } catch (e) { console.error(e); toast(t("err")); }
   };
 }
@@ -962,9 +1229,9 @@ async function deletePerson(id) {
   } catch (e) { console.error(e); toast(t("err")); }
 }
 
-/* ================= owner inbox ================= */
+/* ================= admin inbox ================= */
 async function loadPending() {
-  if (!isOwner) return;
+  if (!isAdmin) return;
   try {
     const snap = await getDocs(query(collection(db, "requests"), where("status", "==", "pending")));
     pending = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
@@ -979,11 +1246,20 @@ function inbox() {
     if (r.type === "add") what = `${t("reqAdd")} <b>${esc(r.ar || r.en)}</b> ${r.en && r.ar ? `(${esc(r.en)})` : ""} ${t("under")} ${line(r.parentId)}`;
     if (r.type === "edit") what = `${t("reqEdit")} ${line(r.targetId)} → <b>${esc(r.ar || "")}</b> ${esc(r.en || "")}`;
     if (r.type === "photo") what = `${t("reqPhoto")} ${line(r.targetId)}`;
+    const extra = [
+      r.phone && `📞 <span dir="ltr">${esc(r.phone)}</span>`, r.wa && `💬 <span dir="ltr">${esc(r.wa)}</span>`,
+      r.pemail && `✉️ <span dir="ltr">${esc(r.pemail)}</span>`, r.dob && `🎂 <span dir="ltr">${esc(r.dob)}</span>`,
+    ].filter(Boolean).join(" · ");
     const when = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB") : "";
     return `<div class="req" data-r="${r.id}">
       <div class="pic">${r.photo ? `<img alt="" src="${r.photo}">` : (r.type === "add" ? "🌱" : "✎")}</div>
-      <div><div class="meta">${t("from")} <b>${esc(r.by)}</b>${r.contact ? " · " + esc(r.contact) : ""} · ${when}</div>
-      <div class="what">${what}</div>${r.note ? `<div class="meta">“${esc(r.note)}”</div>` : ""}
+      <div><div class="meta">${t("from")} <b>${esc(r.by)}</b> · <span dir="ltr">${esc(r.byEmail || "")}</span> · ${when}</div>
+      <div class="what">${what}</div>
+      ${extra ? `<div class="meta">${extra}</div>` : ""}
+      ${r.spouse ? `<div class="meta">💍 ${esc(r.spouse)}</div>` : ""}
+      ${r.sons || r.daughters ? `<div class="meta">👦 ${esc(r.sons || "—")} · 👧 ${esc(r.daughters || "—")}</div>` : ""}
+      ${r.info ? `<div class="meta">ℹ️ ${esc(r.info)}</div>` : ""}
+      ${r.note ? `<div class="meta">“${esc(r.note)}”</div>` : ""}
       <div class="foot"><button class="btn primary" data-ok="${r.id}">✓ ${t("approve")}</button><button class="btn danger" data-no="${r.id}">✕ ${t("reject")}</button></div></div></div>`;
   }).join("");
   openModal(`<h3>${t("inbox")}</h3><p class="sub">${t("inboxSub")}</p>${items || `<div class="empty">${t("noReq")}</div>`}
@@ -998,12 +1274,16 @@ function inbox() {
     try {
       if (ok) {
         let focusId = r.targetId || r.parentId;
+        const det = { phone: r.phone, wa: r.wa, pemail: r.pemail, dob: r.dob };
+        const hasDet = Object.values(det).some(Boolean);
         if (r.type === "add" && P(r.parentId)) {
           const nid = newId();
-          const rec = { ar: r.ar || "", en: r.en || "", gender: r.gender || "m", parent: r.parentId,
+          const rec = { ar: r.ar || "", en: r.en || "", gender: r.gender || "m", parent: r.parentId, note: r.info || "", spouse: r.spouse || "",
             order: Math.max(0, ...Object.values(tree.people).map((x) => x.order || 0)) + 1 };
           Object.keys(rec).forEach((k) => rec[k] === "" && delete rec[k]);
           await updateDoc(doc(db, "tree", "main"), { [`people.${nid}`]: rec, updatedAt: serverTimestamp() });
+          if (hasDet) await saveDetails(nid, det);
+          await createKids(nid, { sons: r.sons, daughters: r.daughters });
           if (r.photo) { await setDoc(doc(db, "photos", nid), { data: r.photo }); photos[nid] = r.photo; }
           focusId = nid;
         }
@@ -1012,7 +1292,17 @@ function inbox() {
           if (r.ar) upd[`people.${r.targetId}.ar`] = r.ar;
           if (r.en) upd[`people.${r.targetId}.en`] = r.en;
           if (r.gender) upd[`people.${r.targetId}.gender`] = r.gender;
+          if (r.info) upd[`people.${r.targetId}.note`] = r.info;
+          if (r.spouse) upd[`people.${r.targetId}.spouse`] = r.spouse;
           await updateDoc(doc(db, "tree", "main"), upd);
+          if (hasDet) {
+            // merge: a correction only overwrites the fields it fills in
+            delete detailsCache[r.targetId];
+            const old = (await getDetails(r.targetId)) || {};
+            const merged = { ...old };
+            Object.entries(det).forEach(([k, v]) => { if (v) merged[k] = v; });
+            await saveDetails(r.targetId, merged);
+          }
           if (r.photo) { await setDoc(doc(db, "photos", r.targetId), { data: r.photo }); photos[r.targetId] = r.photo; }
         }
         if (r.type === "photo" && r.photo && P(r.targetId)) {
@@ -1035,19 +1325,38 @@ function inbox() {
 }
 document.getElementById("btnInbox").onclick = async () => { await loadPending(); inbox(); };
 
-/* ================= owner sign in / import ================= */
-document.getElementById("btnOwner").onclick = () => {
-  if (user) {
-    openModal(`<h3>${esc(user.email)}</h3><p class="sub">${isOwner ? t("youAreOwner") : t("notOwner")}</p>
-      ${isOwner ? `<div class="foot" style="justify-content:flex-start"><button class="btn" id="oExport">⬇ ${t("exportJson")}</button><label class="btn">⬆ ${t("importJson")}<input type="file" id="oImport" accept=".json,application/json" hidden></label></div>` : ""}
-      <div class="foot"><button class="btn" data-close>✕</button><button class="btn danger" id="oOut">${t("signOut")}</button></div>`);
-    sheet.querySelector("#oOut").onclick = async () => { await signOut(auth); closeModal(); };
-    sheet.querySelector("#oExport")?.addEventListener("click", exportJson);
-    sheet.querySelector("#oImport")?.addEventListener("change", (e) => importJson(e.target.files[0]));
-  } else {
-    signInWithPopup(auth, new GoogleAuthProvider()).catch((e) => { console.error(e); toast(t("err") + " (" + (e.code || "") + ")"); });
-  }
-};
+/* ================= account menu, admins, backup ================= */
+async function adminsList() {
+  const snap = await getDocs(collection(db, "admins"));
+  return snap.docs.map((d) => d.id).sort();
+}
+async function accountMenu() {
+  const role = isOwner ? t("youAreOwner") : isAdmin ? t("adminMode") : t("member");
+  let admins = [];
+  if (isOwner) { try { admins = await adminsList(); } catch (e) { console.error(e); } }
+  openModal(`
+    <h3>${esc(user.displayName || "")}</h3><p class="sub"><span dir="ltr">${esc(user.email)}</span> · ${role}</p>
+    ${isOwner ? `
+      <div class="field"><label>${t("admins")}</label>
+        <p class="sub">${t("adminsSub")}</p>
+        <div id="aList">${admins.map((a) => `<div class="req" style="grid-template-columns:1fr auto;align-items:center"><span dir="ltr">${esc(a)}</span><button class="btn danger" data-rm="${esc(a)}">✕</button></div>`).join("") || `<p class="sub">—</p>`}</div>
+        <div class="two"><input id="aNew" type="email" dir="ltr" placeholder="name@gmail.com"><button class="btn primary" id="aAdd">＋ ${t("addAdmin")}</button></div>
+      </div>
+      <div class="foot" style="justify-content:flex-start"><button class="btn" id="oExport">⬇ ${t("exportJson")}</button><label class="btn">⬆ ${t("importJson")}<input type="file" id="oImport" accept=".json,application/json" hidden></label></div>` : ""}
+    <div class="foot"><button class="btn" data-close>✕</button><button class="btn danger" id="oOut">${t("signOut")}</button></div>`);
+  sheet.querySelector("#oOut").onclick = async () => { await signOut(auth); closeModal(); };
+  sheet.querySelector("#oExport")?.addEventListener("click", exportJson);
+  sheet.querySelector("#oImport")?.addEventListener("change", (e) => importJson(e.target.files[0]));
+  sheet.querySelector("#aAdd")?.addEventListener("click", async () => {
+    const em = sheet.querySelector("#aNew").value.trim().toLowerCase();
+    if (!validMail(em) || !em) { toast(t("badEmail")); return; }
+    try { await setDoc(doc(db, "admins", em), { addedAt: serverTimestamp() }); toast(t("saved")); accountMenu(); } catch (e) { console.error(e); toast(t("err")); }
+  });
+  sheet.querySelectorAll("[data-rm]").forEach((b) => (b.onclick = async () => {
+    try { await deleteDoc(doc(db, "admins", b.dataset.rm)); toast(t("deleted")); accountMenu(); } catch (e) { console.error(e); toast(t("err")); }
+  }));
+}
+document.getElementById("btnOwner").onclick = () => { if (user) accountMenu(); else signInGoogle(); };
 function download(name, blob) {
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
@@ -1140,7 +1449,7 @@ function posterSvg(kind, plang) {
   nodes.forEach((n) => {
     const id = n.d.data.id, col = colorOf(id), ph = photos[id];
     s += `<g transform="translate(${n.x},${n.y})">`;
-    if (id === tree.meId) s += `<circle r="${R + 9}" fill="#e3c26b" opacity=".55"/>`;
+    if (id === myId()) s += `<circle r="${R + 9}" fill="#e3c26b" opacity=".55"/>`;
     s += `<circle r="${R}" fill="#fffdf7" stroke="${col}" stroke-width="3"/><circle r="${R - 3}" fill="${col}"/>`;
     if (ph) s += `<image href="${ph}" xlink:href="${ph}" x="${-(R - 3)}" y="${-(R - 3)}" width="${(R - 3) * 2}" height="${(R - 3) * 2}" clip-path="url(#c)" preserveAspectRatio="xMidYMid slice"/>`;
     else s += `<text text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="700" fill="#fff">${esc([...nm(P(id), plang)][0])}</text>`;
@@ -1160,11 +1469,123 @@ function posterSvg(kind, plang) {
   return { svgText: s, w, h };
 }
 
+/* ================= welcome: "find yourself in the tree" ================= */
+// Step 1: are you from the Omran family (through your father / your mother) or just visiting?
+// Father side: your name + father + grandfather -> find you, or your father to add you under him.
+// Mother side: your name + father + mother + mother's father -> find your mother (add you under her),
+// or her father (add your mother, her husband and you in one request).
+const same = (a, b) => !!a && !!b && fold(a).replace(/\s/g, "") === fold(b).replace(/\s/g, "");
+const nameMatch = (id, s) => !!P(id) && (same(P(id).ar, s) || same(P(id).en, s));
+const childNamed = (parentId, s) => kidsOf(parentId).filter((k) => nameMatch(k, s));
+const lineText = (id, n = 4) => lineage(id).slice(0, n).map((a) => nm(P(a))).join(" ← ");
+const isArabicText = (s) => /[؀-ۿ]/.test(s);
+function personRow(id, btn) {
+  return `<div class="req" style="grid-template-columns:48px 1fr auto;align-items:center"><div class="pic" style="width:48px;height:48px">${avatarHtml(id)}</div>
+    <div><b>${esc(nm(P(id)))}</b><div class="meta">${esc(lineText(id))}</div></div>${btn}</div>`;
+}
+function withSignIn(fn) { if (user) fn(); else signInGoogle().then((ok) => ok && fn()); }
+
+function welcome(force = false) {
+  if (!tree) return;
+  try { if (!force && localStorage.getItem("ft-welcomed")) return; } catch (e) { /* storage blocked */ }
+  const done = () => { try { localStorage.setItem("ft-welcomed", "1"); } catch (e) { /* storage blocked */ } };
+  openModal(`
+    <div style="text-align:center;font-size:46px;line-height:1">🌳</div>
+    <h3 style="text-align:center">${t("welcomeTitle")}</h3>
+    <p class="sub" style="text-align:center">${t("areYouFamily")}</p>
+    <div class="opts">
+      <button class="opt" data-w="father"><b>👨 ${t("viaFather")}</b><span>${t("viaFatherSub")}</span></button>
+      <button class="opt" data-w="mother"><b>👩 ${t("viaMother")}</b><span>${t("viaMotherSub")}</span></button>
+    </div>
+    <div class="foot" style="justify-content:center"><button class="btn" data-w="browse">${t("justBrowse")}</button></div>`);
+  sheet.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => {
+    const w = b.dataset.w;
+    if (w === "browse") { done(); closeModal(); return; }
+    askNames(w, done);
+  }));
+}
+
+function askNames(side, done) {
+  const mother = side === "mother";
+  openModal(`
+    <h3>${mother ? "👩 " + t("viaMother") : "👨 " + t("viaFather")}</h3>
+    <p class="sub">${mother ? t("motherSideSub") : t("welcomeSub")}</p>
+    <div class="two"><div class="field"><label>${t("yourFirstName")}</label><input id="wMe" autocomplete="given-name"></div>
+    <div class="field"><label>${t("iAm")}</label><select id="wG"><option value="m">${t("male")}</option><option value="f">${t("female")}</option></select></div></div>
+    <div class="two"><div class="field"><label>${t("fatherName")}</label><input id="wFa"></div>
+    ${mother ? `<div class="field"><label>${t("motherName")}</label><input id="wMo"></div>` : `<div class="field"><label>${t("grandName")}</label><input id="wGr"></div>`}</div>
+    ${mother ? `<div class="field"><label>${t("motherFather")}</label><input id="wMoFa"></div>` : ""}
+    <div id="wOut"></div>
+    <div class="foot"><button class="btn" id="wBack">← ${t("back")}</button><button class="btn primary" id="wGo">🔎 ${t("findMe")}</button></div>`);
+  sheet.querySelector("#wBack").onclick = () => welcome(true);
+  const v = (s) => sheet.querySelector(s)?.value.trim() || "";
+  const go = () => {
+    const me = v("#wMe"), fa = v("#wFa"), gender = v("#wG") || "m", momName = mother ? v("#wMo") : "";
+    const out = sheet.querySelector("#wOut");
+    const meBtn = (id) => `<button class="btn primary" data-me="${id}">${t("thatsMe")}</button>`;
+    let html = "";
+    if (!mother) {
+      const gr = v("#wGr");
+      if (!me || !fa) { toast(t("needMeFather")); return; }
+      const fathers = Object.keys(tree.people).filter((id) => nameMatch(id, fa) && (!gr || nameMatch(P(id).parent, gr)));
+      const exact = fathers.flatMap((f) => childNamed(f, me));
+      if (exact.length) html = `<p class="sub">🎉 ${t("foundYou")}</p>` + exact.map((id) => personRow(id, meBtn(id))).join("");
+      else if (fathers.length) html = `<p class="sub">🌱 ${t("notYetButFather")}</p>` + fathers.map((id) => personRow(id, `<button class="btn gold" data-addme="${id}">＋ ${t("addMeHere")}</button>`)).join("");
+      else html = `<p class="sub">🤔 ${t("notFound")}</p>`;
+    } else {
+      const mo = v("#wMo"), moFa = v("#wMoFa");
+      if (!me || !mo || !moFa) { toast(t("needMother")); return; }
+      const mothers = Object.keys(tree.people).filter((id) => nameMatch(id, mo) && nameMatch(P(id).parent, moFa));
+      const exact = mothers.flatMap((m) => childNamed(m, me));
+      const grands = Object.keys(tree.people).filter((id) => nameMatch(id, moFa));
+      if (exact.length) html = `<p class="sub">🎉 ${t("foundYou")}</p>` + exact.map((id) => personRow(id, meBtn(id))).join("");
+      else if (mothers.length) html = `<p class="sub">🌸 ${t("foundMother")}</p>` + mothers.map((id) => personRow(id, `<button class="btn gold" data-addme="${id}">＋ ${t("addMeHere")}</button>`)).join("");
+      else if (grands.length) html = `<p class="sub">🌱 ${t("notMotherButGrand")}</p>` + grands.slice(0, 8).map((id) => personRow(id, `<button class="btn gold" data-addmom="${id}">＋ ${t("addMotherAndMe")}</button>`)).join("");
+      else html = `<p class="sub">🤔 ${t("notFound")}</p>`;
+    }
+    out.innerHTML = html;
+    out.onclick = (e) => {
+      const meId = e.target.closest("[data-me]")?.dataset.me;
+      const under = e.target.closest("[data-addme]")?.dataset.addme;
+      const mom = e.target.closest("[data-addmom]")?.dataset.addmom;
+      if (meId) {
+        done(); closeModal(); select(meId);
+        try { localStorage.setItem("ft-me", meId); } catch (er) { /* storage blocked */ }
+        render(false);
+        setTimeout(() => { if (selected === meId) openInfoPrompt(meId); }, 1600);
+      }
+      if (under) {
+        done(); closeModal(); select(under);
+        const pre = { name: me, gender };
+        if (mother) pre.note = `${t("fatherName")}: ${fa}`;
+        withSignIn(() => requestForm("add", under, pre));
+      }
+      if (mom) {
+        // one request: the mother under her father, with her husband and this child
+        const pre = { name: momName, gender: "f", spouse: fa, [gender === "f" ? "daughters" : "sons"]: me };
+        done(); closeModal(); select(mom);
+        withSignIn(() => requestForm("add", mom, pre));
+      }
+    };
+  };
+  sheet.querySelector("#wGo").onclick = go;
+  sheet.querySelectorAll("input").forEach((i) => i.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); }));
+  setTimeout(() => sheet.querySelector("#wMe")?.focus(), 200);
+}
+function openInfoPrompt(id) {
+  openModal(`
+    <div style="text-align:center;font-size:40px;line-height:1">👋</div>
+    <h3 style="text-align:center">${t("helloName").replace("{n}", esc(nm(P(id))))}</h3>
+    <p class="sub" style="text-align:center">${t("addInfoSub")}</p>
+    <div class="foot" style="justify-content:center"><button class="btn" data-close>${t("later")}</button><button class="btn primary" id="iGo">✎ ${t("addMyInfo")}</button></div>`);
+  sheet.querySelector("#iGo").onclick = () => withSignIn(() => requestForm("edit", id));
+}
+
 /* ================= misc controls ================= */
 document.getElementById("zIn").onclick = () => svg.transition().call(zoom.scaleBy, 1.35);
 document.getElementById("zOut").onclick = () => svg.transition().call(zoom.scaleBy, 1 / 1.35);
 document.getElementById("zFit").onclick = () => fit();
-document.getElementById("zMe").onclick = () => tree?.meId && select(tree.meId);
+document.getElementById("zMe").onclick = () => myId() && select(myId());
 const setView = (v) => {
   clearTimeout(introTimer);
   view = v;
@@ -1176,6 +1597,7 @@ const setView = (v) => {
 };
 document.getElementById("vTree").onclick = () => setView("tree");
 document.getElementById("vRadial").onclick = () => setView("radial");
+document.getElementById("btnWho").onclick = () => welcome(true);
 document.getElementById("btnLang").onclick = () => {
   lang = lang === "ar" ? "en" : "ar";
   try { localStorage.setItem("ft-lang", lang); } catch (e) { /* storage blocked */ }
@@ -1234,7 +1656,8 @@ function firstRender() {
   loader.classList.add("done");
   // open on the whole tree, then glide to "you"
   fit(0);
-  introTimer = setTimeout(() => { if (tree.meId && P(tree.meId)) focus(tree.meId, 0.95, 1600); }, 2300);
+  introTimer = setTimeout(() => { if (myId() && P(myId())) focus(myId(), 0.95, 1600); }, 2300);
+  setTimeout(() => { if (!modal.classList.contains("open")) welcome(); }, 4200);
 }
 let introTimer = 0;
 // Local preview only: ?local=1 reads seed.json next to the page (never published).
@@ -1259,17 +1682,26 @@ if (LOCAL) {
 
 onAuthStateChanged(auth, async (u) => {
   user = u;
-  isOwner = false;
+  isOwner = false; isAdmin = false;
+  Object.keys(detailsCache).forEach((k) => delete detailsCache[k]);
   if (u) {
-    try { await getDocs(query(collection(db, "requests"), limit(1))); isOwner = true; } catch (e) { isOwner = false; }
+    // roles are decided by the Firestore rules: owner can list admins, admins can read requests
+    try { await getDocs(query(collection(db, "admins"), limit(1))); isOwner = true; } catch (e) { isOwner = false; }
+    try { await getDocs(query(collection(db, "requests"), limit(1))); isAdmin = true; } catch (e) { isAdmin = false; }
   }
-  document.getElementById("btnInbox").classList.toggle("hide", !isOwner);
-  document.getElementById("btnOwner").style.color = isOwner ? "var(--gold)" : "";
-  if (u && !isOwner) toast(t("notOwner"));
-  if (isOwner) await loadPending();
+  const btn = document.getElementById("btnOwner");
+  btn.innerHTML = u
+    ? `<span class="me-chip">${u.photoURL ? `<img alt="" src="${esc(u.photoURL)}" referrerpolicy="no-referrer">` : "👤"}<span class="lbl">${esc((u.displayName || u.email).split(" ")[0])}</span></span>`
+    : `<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.4.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg><span class="lbl">${t("signIn")}</span>`;
+  btn.classList.remove("icon", "ghost");
+  btn.style.color = isAdmin ? "var(--gold)" : "";
+  document.getElementById("btnInbox").classList.toggle("hide", !isAdmin);
+  if (isAdmin) await loadPending();
   if (selected) openPanel(selected);
   if (!tree && modal.classList.contains("open") && sheet.textContent.includes(t("empty"))) showEmpty();
+  if (isAdmin && new URLSearchParams(location.search).has("inbox")) { inbox(); history.replaceState(null, "", location.pathname); }
 });
+if (new URLSearchParams(location.search).has("inbox")) setTimeout(() => { if (!user) toast(t("signInForInbox")); }, 2500);
 </script>
 </body>
 </html>
