@@ -1006,6 +1006,13 @@ let firstDraw = true;
 let pending = [];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const nm = (p, l = lang) => (l === "ar" ? (p.ar || p.en) : (p.en || p.ar)) || "?";
+// spouse is free text, optionally "Arabic / Latin": pick the part written in the right script
+function spouseName(p, l = lang) {
+  const parts = String(p?.spouse || "").split("/").map((x) => x.trim()).filter(Boolean);
+  if (parts.length < 2) return parts[0] || "";
+  const arPart = parts.find((x) => /[؀-ۿ]/.test(x)), laPart = parts.find((x) => !/[؀-ۿ]/.test(x));
+  return (l === "ar" ? arPart || laPart : laPart || arPart) || parts[0];
+}
 const P = (id) => tree?.people?.[id];
 function myId() {
   let m = null;
@@ -1292,8 +1299,9 @@ function openPanel(id) {
   document.getElementById("pOwnerTag").textContent = isOwner ? t("youAreOwner") : t("adminMode");
   document.getElementById("pName").textContent = nm(p) + (id === myId() ? "  ⭐" : "");
   const other = lang === "ar" ? p.en : p.ar;
+  // spouse may be stored as "Arabic / Latin" — show the script that fits the language
   const years = [p.born, p.died].filter(Boolean).join(" – ");
-  const spouse = p.spouse ? `💍 ${p.gender === "f" ? t("husband") : t("wife")}: ${p.spouse}` : "";
+  const spouse = p.spouse ? `💍 ${p.gender === "f" ? t("husband") : t("wife")}: ${spouseName(p)}` : "";
   document.getElementById("pAlt").textContent = [other, years, spouse].filter(Boolean).join(" · ");
   const line = lineage(id);
   document.getElementById("pLineage").innerHTML = line.map((a, i) => {
@@ -1302,7 +1310,7 @@ function openPanel(id) {
     const child = P(line[i - 1]), par = P(a);
     const rel = child.gender === "f" ? t("daughter") : t("son");
     // through a daughter: "Ali son of Khaled, his mother Laila daughter of ..."
-    if (par.gender === "f") return ` ${rel} ${esc(par.spouse || "…")}، ${child.gender === "f" ? t("herMother") : t("hisMother")} ${link}`;
+    if (par.gender === "f") return ` ${rel} ${esc(spouseName(par) || "…")}${lang === "ar" ? "،" : ","} ${child.gender === "f" ? t("herMother") : t("hisMother")} ${link}`;
     return ` ${rel} ${link}`;
   }).join("");
   document.getElementById("pGen").textContent = line.length;
