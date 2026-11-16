@@ -17,7 +17,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%232f5d50'/%3E%3Cpath d='M32 50V30M32 36l-9-8M32 32l9-9' stroke='%23e3c26b' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3Ccircle cx='22' cy='26' r='6' fill='%23e3c26b'/%3E%3Ccircle cx='42' cy='21' r='6' fill='%23e3c26b'/%3E%3Ccircle cx='32' cy='18' r='5' fill='%23e3c26b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <style>
 :root {
@@ -317,6 +317,16 @@ html[lang="en"] .sheet h3 { font-family: var(--disp-en); }
 .join { padding: 4px; }
 .req .pic img { width: 100%; height: 100%; object-fit: cover; }
 
+.greet-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.greet-item { flex: none; display: flex; gap: 10px; align-items: center; text-align: start; border: 2px solid var(--line); background: var(--paper); border-radius: 16px; padding: 10px 14px; }
+.greet-item.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(195, 154, 58, .18); }
+.greet-item .ge { font-size: 28px; }
+.greet-item small { display: block; color: var(--muted); font-size: 12px; }
+.greet-card { margin-top: 12px; display: grid; gap: 10px; justify-items: center; }
+.greet-card img { width: min(420px, 100%); border-radius: 18px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2, 1.4, .4, 1); }
+.greet-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.greet-actions .btn { text-decoration: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .leaf, .me-pulse, .loader .sprout * { animation: none !important; }
   .panel, .toast { transition: none; }
@@ -572,6 +582,17 @@ const T = {
     meetHint: "اضغط «ابحث عن نفسك» لنريك صلة قرابتك بكل شخص.",
     womenPhotosPrivate: "صور البنات والسيدات تظهر لأفراد العائلة الموثّقين فقط.",
     relativeTo: "بالنسبة إلى",
+    dGreet: "التهاني",
+    greetSub: "بطاقة جاهزة لكل جمعة ومناسبة: شاركها على حالة واتساب أو فيسبوك أو أرسلها للعائلة.",
+    greetBdayMembers: "أعياد ميلاد العائلة تظهر هنا لأفراد العائلة الموثّقين.",
+    shareImage: "شارك الصورة",
+    copyText: "انسخ النص",
+    download: "تنزيل",
+    emailFamily: "أرسل بالبريد للعائلة",
+    copied: "تم النسخ ✓",
+    statusTip: "على الهاتف: «شارك الصورة» ثم اختر واتساب ← حالتي، أو فيسبوك.",
+    sharePc: "نُزّلت الصورة. أرسلها إلى هاتفك لنشرها على الحالة.",
+    noEmails: "لا توجد عناوين بريد للعائلة بعد",
   },
   en: {
     title: "Omran Family Tree", subtitle: "Our roots and branches through the generations", search: "Search a name…",
@@ -711,6 +732,17 @@ const T = {
     meetHint: "Tap \"Find yourself\" and we'll show how you're related to everyone.",
     womenPhotosPrivate: "Photos of women and girls are shown to verified family members only.",
     relativeTo: "relative to",
+    dGreet: "Greetings",
+    greetSub: "A ready card for every Friday and occasion: share it to your WhatsApp Status or Facebook, or send it to the family.",
+    greetBdayMembers: "Family birthdays appear here for verified family members.",
+    shareImage: "Share image",
+    copyText: "Copy text",
+    download: "Download",
+    emailFamily: "Email the family",
+    copied: "Copied ✓",
+    statusTip: "On your phone: \"Share image\", then WhatsApp → My status, or Facebook.",
+    sharePc: "Image downloaded. Send it to your phone to post it as a status.",
+    noEmails: "No family email addresses yet",
   },
 };
 let lang = "ar";
@@ -1756,6 +1788,7 @@ function openInfoPrompt(id) {
 // Chat, album, birthdays and contact details are for VERIFIED members only: a Google account that
 // an admin approved (members/{uid}). The Firestore rules enforce it; the page only mirrors it.
 let diwanTab = "chat";
+let greetFocus = null;
 let chatUnsub = null, galleryUnsub = null;
 let chatMsgs = [], galleryItems = [];
 let joins = [];
@@ -1897,12 +1930,13 @@ function stopFeeds() {
 async function openDiwan(tab = diwanTab) {
   diwanTab = tab;
   stopFeeds();
-  const list = [["chat", "💬 " + t("dChat")], ["album", "📸 " + t("dAlbum")], ["rel", "🤝 " + t("dRel")], ["bday", "🎂 " + t("dBday")], ["meet", "✨ " + t("dMeet")]];
+  const list = [["greet", "🎉 " + t("dGreet")], ["chat", "💬 " + t("dChat")], ["album", "📸 " + t("dAlbum")], ["rel", "🤝 " + t("dRel")], ["bday", "🎂 " + t("dBday")], ["meet", "✨ " + t("dMeet")]];
   if (isAdmin) list.push(["members", `👥 ${t("dMembers")}${joins.length ? ` <span class="badge">${joins.length}</span>` : ""}`]);
   const tabs = list.map(([k, l]) => `<button data-dt="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("");
   openModal(`<h3>🏡 ${t("diwan")}</h3><p class="sub">${t("diwanSub")}</p><div class="tabs">${tabs}</div><div id="dBody"></div>`, true);
   sheet.querySelectorAll("[data-dt]").forEach((b) => (b.onclick = () => openDiwan(b.dataset.dt)));
   const body = sheet.querySelector("#dBody");
+  if (tab === "greet") return renderGreet(body, greetFocus);
   if (tab === "chat") return renderChat(body);
   if (tab === "album") return renderAlbum(body);
   if (tab === "rel") return renderRel(body);
@@ -2176,6 +2210,216 @@ function notifyText(subject, lines) {
   }).catch((e) => console.error("email notify failed", e));
 }
 
+/* ================= greetings: Friday cards, occasions, birthdays ================= */
+// Verses: short, well-known ayat about family, mercy and trust. Text with tashkeel + surah:ayah.
+const VERSES = [
+  ["وَاعْتَصِمُوا بِحَبْلِ اللَّهِ جَمِيعًا وَلَا تَفَرَّقُوا", "آل عمران", 103],
+  ["وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً", "الروم", 21],
+  ["إِنَّمَا الْمُؤْمِنُونَ إِخْوَةٌ", "الحجرات", 10],
+  ["وَاتَّقُوا اللَّهَ الَّذِي تَسَاءَلُونَ بِهِ وَالْأَرْحَامَ", "النساء", 1],
+  ["رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ", "الفرقان", 74],
+  ["وَقُل رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", "الإسراء", 24],
+  ["أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", "الرعد", 28],
+  ["فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", "الشرح", 5],
+  ["وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", "الطلاق", 3],
+  ["وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ", "الأعراف", 156],
+  ["وَقُولُوا لِلنَّاسِ حُسْنًا", "البقرة", 83],
+  ["فَاذْكُرُونِي أَذْكُرْكُمْ", "البقرة", 152],
+  ["إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", "البقرة", 153],
+  ["إِنَّ رَبِّي قَرِيبٌ مُّجِيبٌ", "هود", 61],
+  ["وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ", "هود", 88],
+  ["ادْعُونِي أَسْتَجِبْ لَكُمْ", "غافر", 60],
+  ["وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ", "الضحى", 5],
+  ["وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ", "الحديد", 4],
+  ["لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", "البقرة", 286],
+  ["رَبِّ زِدْنِي عِلْمًا", "طه", 114],
+  ["سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ", "يس", 58],
+  ["إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ", "البقرة", 195],
+  ["وَإِن تَعُدُّوا نِعْمَةَ اللَّهِ لَا تُحْصُوهَا", "النحل", 18],
+  ["رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً", "البقرة", 201],
+];
+const FRIDAY_MSGS = [
+  "جمعة مباركة يا أهلنا 🤍 الله يجمعنا دايمًا على الخير والمحبة، ويحفظ كبيرنا وصغيرنا.",
+  "في هالجمعة المباركة، ادعوا لبعض بظهر الغيب… الدعوة الحلوة بتوصل 🌿",
+  "صلة الرحم بركة بالعمر والرزق. اتصلوا بقريب ما حكيتوه من زمان اليوم ☎️",
+  "جمعة مباركة 🌸 الله يديم الألفة بين عائلة آل عمران، ويبعد عنّا كل همّ.",
+  "اليوم يوم الجمعة… أكثروا من الصلاة على النبي ﷺ، والله يتقبّل منّا ومنكم.",
+  "أحلى شي بالعيلة إنها سند. الله يخلّيلنا بعض ويجمعنا بأفراحنا 💚",
+  "جمعة طيبة لكل فرد من العائلة، من أكبر جدّ لأصغر حفيد 🌳",
+  "تذكّروا كبار العائلة بزيارة أو اتصال اليوم… رضاهم نور 🤲",
+  "الله يجعل هالجمعة فاتحة خير وفرج لكل مين عنده همّ من أهلنا.",
+  "جمعة مباركة 🌿 العائلة شجرة: جذورنا واحدة وفروعنا كثيرة، وكلنا منها.",
+  "ابعتوا صورة حلوة على ديوان العائلة هالجمعة، خلّينا نتعرّف على بعض أكثر 📸",
+  "الله يرحم أمواتنا ويحفظ أحياءنا، ويجمعنا بالجنة كما جمعنا بالدنيا 🤍",
+];
+// Hijri month-day -> occasion (computed with the Umm al-Qura calendar; local announcements may shift a day)
+const HIJRI_OCCASIONS = { "9-1": "ramadan", "10-1": "eidFitr", "12-10": "eidAdha", "1-1": "hijriNew", "3-12": "mawlid" };
+const OCC = {
+  friday: { emoji: "🕌", ar: "جمعة مباركة", en: "Blessed Friday" },
+  ramadan: { emoji: "🌙", ar: "رمضان كريم", en: "Ramadan Kareem", verse: ["شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ", "البقرة", 185],
+    msg: "رمضان كريم 🌙 الله يبلّغنا وإياكم الشهر الفضيل بالصحة والعافية، ويتقبّل صيامكم وقيامكم. كل عام وعائلة آل عمران بخير." },
+  eidFitr: { emoji: "🌙", ar: "عيد فطر مبارك", en: "Eid al-Fitr Mubarak", verse: ["وَلِتُكْمِلُوا الْعِدَّةَ وَلِتُكَبِّرُوا اللَّهَ عَلَىٰ مَا هَدَاكُمْ", "البقرة", 185],
+    msg: "عيد فطر مبارك 🎉 تقبّل الله منّا ومنكم صالح الأعمال، وكل عام وأنتم بألف خير يا أهلنا." },
+  eidAdha: { emoji: "🐑", ar: "عيد أضحى مبارك", en: "Eid al-Adha Mubarak", verse: ["فَصَلِّ لِرَبِّكَ وَانْحَرْ", "الكوثر", 2],
+    msg: "عيد أضحى مبارك 🤍 أعاده الله علينا وعليكم بالخير واليُمن والبركات، وتقبّل من الحجّاج حجّهم." },
+  hijriNew: { emoji: "✨", ar: "سنة هجرية مباركة", en: "Happy Hijri New Year", verse: ["لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا", "التوبة", 40],
+    msg: "كل عام وأنتم بخير بمناسبة رأس السنة الهجرية ✨ الله يجعلها سنة خير وصحة وفرح لكل العائلة." },
+  mawlid: { emoji: "💚", ar: "المولد النبوي الشريف", en: "Mawlid al-Nabi", verse: ["وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ", "الأنبياء", 107],
+    msg: "بمناسبة ذكرى المولد النبوي الشريف 💚 اللهم صلِّ وسلّم على سيدنا محمد، وكل عام وأنتم بخير." },
+  mother: { emoji: "🌷", ar: "عيد الأم", en: "Mother's Day", verse: ["وَقُل رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", "الإسراء", 24],
+    msg: "إلى كل أمّ في عائلة آل عمران 🌷 أنتنّ جذور هذه الشجرة وظلّها. كل عام وأنتنّ بخير، والرحمة لأمهاتنا اللواتي رحلن." },
+  birthday: { emoji: "🎂", ar: "عيد ميلاد سعيد", en: "Happy Birthday", verse: ["وَالسَّلَامُ عَلَيَّ يَوْمَ وُلِدتُّ", "مريم", 33] },
+};
+const dayMs = 86400000;
+const atNoon = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+function nextFriday(from = new Date()) { const d = atNoon(from); d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7)); return d; }
+function weekIndex(d) { return Math.floor((atNoon(d) - new Date(2026, 0, 2, 12)) / (7 * dayMs)); }
+function fridayContent(d = nextFriday()) {
+  const i = ((weekIndex(d) % VERSES.length) + VERSES.length) % VERSES.length;
+  const j = ((weekIndex(d) % FRIDAY_MSGS.length) + FRIDAY_MSGS.length) % FRIDAY_MSGS.length;
+  return { key: "friday", date: d, title: OCC.friday.ar, emoji: OCC.friday.emoji, verse: VERSES[i], msg: FRIDAY_MSGS[j] };
+}
+function upcomingOccasions(days = 380) {
+  const out = [];
+  let fmt = null;
+  try { fmt = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", { day: "numeric", month: "numeric" }); } catch (e) { fmt = null; }
+  const start = atNoon(new Date());
+  for (let i = 0; i <= days; i++) {
+    const d = new Date(start.getTime() + i * dayMs);
+    if (fmt) {
+      const parts = fmt.formatToParts(d);
+      const key = `${parts.find((p) => p.type === "month")?.value}-${parts.find((p) => p.type === "day")?.value}`;
+      if (HIJRI_OCCASIONS[key]) out.push({ key: HIJRI_OCCASIONS[key], date: d });
+    }
+    if (d.getMonth() === 2 && d.getDate() === 21) out.push({ key: "mother", date: d }); // Lebanon
+  }
+  return out.map((o) => ({ ...o, title: OCC[o.key].ar, emoji: OCC[o.key].emoji, verse: OCC[o.key].verse, msg: OCC[o.key].msg }));
+}
+function birthdayContent(x) {
+  const n = nm(P(x.id), "ar");
+  return { key: "bday", id: x.id, date: x.date, title: `${OCC.birthday.ar}`, emoji: "🎂", verse: OCC.birthday.verse,
+    msg: `كل عام وأنت بخير يا ${n} 🎂 الله يطوّل بعمرك ويسعدك ويحقق كل أمنياتك. من كل عائلة آل عمران مع المحبة 🌳`, name: n, wa: x.wa };
+}
+const greetingText = (c) => `${c.emoji} ${c.title}${c.name ? " يا " + c.name : ""}\n\n﴿${c.verse[0]}﴾\n[${c.verse[1]}: ${c.verse[2]}]\n\n${c.msg}\n\n🌳 شجرة آل عمران\n${location.origin}${location.pathname}`;
+
+/* ---- the card image (1080x1350, good for WhatsApp Status and Facebook) ---- */
+function wrapLines(ctx, text, maxW) {
+  const words = text.split(/\s+/); const lines = []; let line = "";
+  words.forEach((w) => { const tst = line ? line + " " + w : w; if (ctx.measureText(tst).width > maxW && line) { lines.push(line); line = w; } else line = tst; });
+  if (line) lines.push(line);
+  return lines;
+}
+async function drawCard(c) {
+  const W = 1080, H = 1350;
+  try { await Promise.all(["700 80px 'Reem Kufi'", "700 56px Amiri", "600 34px 'IBM Plex Sans Arabic'"].map((f) => document.fonts.load(f))); } catch (e) { /* fonts optional */ }
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const x = cv.getContext("2d");
+  const g = x.createRadialGradient(W / 2, 0, 100, W / 2, H / 2, H);
+  g.addColorStop(0, "#fbf4e3"); g.addColorStop(.6, "#f0e3c4"); g.addColorStop(1, "#dcc690");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  // soft pattern of dots
+  x.fillStyle = "rgba(195,154,58,.12)";
+  for (let i = 0; i < 160; i++) { x.beginPath(); x.arc((i * 137) % W, (i * 271) % H, 2 + (i % 3), 0, Math.PI * 2); x.fill(); }
+  // frames
+  const rr = (px, py, w, h, r) => { x.beginPath(); x.roundRect(px, py, w, h, r); };
+  x.strokeStyle = "#c39a3a"; x.lineWidth = 6; rr(28, 28, W - 56, H - 56, 40); x.stroke();
+  x.lineWidth = 2; x.globalAlpha = .6; rr(48, 48, W - 96, H - 96, 30); x.stroke(); x.globalAlpha = 1;
+  x.textAlign = "center"; x.direction = "rtl";
+  // emoji on a medallion
+  x.fillStyle = "#2f5d50"; x.beginPath(); x.arc(W / 2, 175, 86, 0, Math.PI * 2); x.fill();
+  x.strokeStyle = "#e3c26b"; x.lineWidth = 6; x.stroke();
+  x.font = "92px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif"; x.textBaseline = "middle";
+  x.fillText(c.emoji, W / 2, 182); x.textBaseline = "alphabetic";
+  // title (+ name for birthdays)
+  x.fillStyle = "#2f5d50"; x.font = "700 104px 'Reem Kufi', 'IBM Plex Sans Arabic', serif";
+  x.fillText(c.title, W / 2, 380);
+  let headBottom = 410;
+  if (c.name) { x.font = "700 72px 'Reem Kufi', serif"; x.fillStyle = "#8a6a1f"; x.fillText(c.name, W / 2, 475); headBottom = 505; }
+  // measure verse + message, then centre them between the title and the footer
+  x.font = "700 72px Amiri, 'Traditional Arabic', serif";
+  const vLines = wrapLines(x, `﴿ ${c.verse[0]} ﴾`, W - 280);
+  const vh = vLines.length * 112 + 120;
+  x.font = "600 46px 'IBM Plex Sans Arabic', sans-serif";
+  const mLines = wrapLines(x, c.msg, W - 230).slice(0, 7);
+  const mh = mLines.length * 72;
+  const footerTop = H - 190;
+  const top = headBottom + Math.max(30, (footerTop - headBottom - (vh + 70 + mh)) / 2);
+  x.fillStyle = "rgba(255,253,247,.88)"; rr(110, top, W - 220, vh, 34); x.fill();
+  x.strokeStyle = "#e3c26b"; x.lineWidth = 3; x.stroke();
+  x.fillStyle = "#2a2620"; x.font = "700 72px Amiri, 'Traditional Arabic', serif";
+  vLines.forEach((l, i) => x.fillText(l, W / 2, top + 100 + i * 112));
+  x.font = "600 32px 'IBM Plex Sans Arabic', sans-serif"; x.fillStyle = "#8a6a1f";
+  x.fillText(`سورة ${c.verse[1]} · ${c.verse[2]}`, W / 2, top + vh - 30);
+  // message
+  x.font = "600 46px 'IBM Plex Sans Arabic', sans-serif"; x.fillStyle = "#2f5d50";
+  mLines.forEach((l, i) => x.fillText(l, W / 2, top + vh + 100 + i * 72));
+  // footer
+  x.fillStyle = "#2f5d50"; rr(W / 2 - 300, H - 170, 600, 84, 42); x.fill();
+  x.fillStyle = "#f0d68e"; x.font = "700 36px 'Reem Kufi', sans-serif"; x.fillText("🌳 شجرة آل عمران", W / 2, H - 116);
+  x.fillStyle = "#776c5a"; x.font = "500 26px 'IBM Plex Sans', sans-serif"; x.direction = "ltr";
+  x.fillText("ahmadellahib.dev/family", W / 2, H - 50);
+  return cv;
+}
+
+/* ---- the greetings tab ---- */
+async function renderGreet(body, focusKey = null) {
+  body.innerHTML = `<div class="empty">…</div>`;
+  const fri = fridayContent();
+  const occ = upcomingOccasions().slice(0, 8);
+  let bdays = [];
+  if (isMember) { try { bdays = upcomingBirthdays(await loadAllDetails(), 30).map(birthdayContent); } catch (e) { console.error(e); } }
+  const all = [fri, ...bdays, ...occ];
+  const fmtD = (d) => d.toLocaleDateString(lang === "ar" ? "ar-LB" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
+  body.innerHTML = `
+    <p class="sub">${t("greetSub")}</p>
+    <div class="greet-list">${all.map((c, i) => `<button class="greet-item" data-g="${i}"><span class="ge">${c.emoji}</span>
+      <span><b>${esc(c.title)}${c.name ? " · " + esc(c.name) : ""}</b><small>${esc(fmtD(c.date))}</small></span></button>`).join("")}</div>
+    <div id="gCard"></div>
+    ${!isMember ? `<p class="sub">🔒 ${t("greetBdayMembers")}</p>` : ""}`;
+  const show = async (c) => {
+    const box = body.querySelector("#gCard");
+    box.innerHTML = `<div class="empty">🎨 …</div>`;
+    const cv = await drawCard(c);
+    const url = cv.toDataURL("image/jpeg", .9);
+    const text = greetingText(c);
+    box.innerHTML = `<div class="greet-card"><img alt="" src="${url}">
+      <div class="greet-actions">
+        <button class="btn primary" data-share>📲 ${t("shareImage")}</button>
+        <a class="btn" target="_blank" rel="noopener" href="https://wa.me/${c.wa ? waLink(c.wa).split("/").pop() : ""}?text=${encodeURIComponent(text)}">💬 WhatsApp</a>
+        <a class="btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.origin + location.pathname)}">📘 Facebook</a>
+        <button class="btn" data-copy>📋 ${t("copyText")}</button>
+        <button class="btn" data-dl>⬇ ${t("download")}</button>
+        ${isAdmin ? `<button class="btn gold" data-mail>📧 ${t("emailFamily")}</button>` : ""}
+      </div><p class="sub">${t("statusTip")}</p></div>`;
+    const blob = await new Promise((r) => cv.toBlob(r, "image/jpeg", .92));
+    const file = new File([blob], `omran-${c.key}.jpg`, { type: "image/jpeg" });
+    box.querySelector("[data-share]").onclick = async () => {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], text }); } catch (e) { /* cancelled */ }
+      } else { download(file.name, blob); toast(t("sharePc")); }
+    };
+    box.querySelector("[data-copy]").onclick = async () => { try { await navigator.clipboard.writeText(text); toast(t("copied")); } catch (e) { toast(t("err")); } };
+    box.querySelector("[data-dl]").onclick = () => download(file.name, blob);
+    box.querySelector("[data-mail]")?.addEventListener("click", async () => {
+      const emails = new Set();
+      Object.values(await loadAllDetails()).forEach((d) => d.pemail && emails.add(d.pemail));
+      try { (await getDocs(collection(db, "members"))).forEach((m) => m.data().email && emails.add(m.data().email)); } catch (e) { console.error(e); }
+      if (c.key === "bday") { const d = allDetails?.[c.id]; emails.clear(); if (d?.pemail) emails.add(d.pemail); }
+      if (!emails.size) { toast(t("noEmails")); return; }
+      location.href = `mailto:?bcc=${encodeURIComponent([...emails].join(","))}&subject=${encodeURIComponent(c.emoji + " " + c.title + " — آل عمران")}&body=${encodeURIComponent(text)}`;
+    });
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  body.querySelector(".greet-list").onclick = (e) => {
+    const i = e.target.closest("[data-g]")?.dataset.g; if (i === undefined) return;
+    body.querySelectorAll(".greet-item").forEach((b) => b.classList.toggle("on", b.dataset.g === i));
+    show(all[+i]);
+  };
+  const first = focusKey ? Math.max(0, all.findIndex((c) => c.key === focusKey)) : 0;
+  body.querySelectorAll(".greet-item")[first]?.classList.add("on");
+  show(all[first]);
+}
+
 /* ================= misc controls ================= */
 document.getElementById("zIn").onclick = () => svg.transition().call(zoom.scaleBy, 1.35);
 document.getElementById("zOut").onclick = () => svg.transition().call(zoom.scaleBy, 1 / 1.35);
@@ -2257,7 +2501,9 @@ function firstRender() {
   // open on the whole tree, then glide to "you"
   fit(0);
   introTimer = setTimeout(() => { if (myId() && P(myId())) focus(myId(), 0.95, 1600); }, 2300);
-  setTimeout(() => { if (!modal.classList.contains("open")) welcome(); }, 4200);
+  const cardParam = new URLSearchParams(location.search).get("card");
+  if (cardParam) { greetFocus = cardParam; setTimeout(() => openDiwan("greet"), 1500); }
+  else setTimeout(() => { if (!modal.classList.contains("open")) welcome(); }, 4200);
 }
 let introTimer = 0;
 // Local preview only: ?local=1 reads seed.json next to the page (never published).
