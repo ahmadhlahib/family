@@ -136,8 +136,14 @@ html[dir="rtl"] .search svg { inset-inline-start: auto; inset-inline-end: 11px; 
 .node .gen { fill: var(--muted); font-size: 10px; text-anchor: middle; }
 .node .body { transition: transform .2s cubic-bezier(.3, 1.6, .5, 1); transform-box: fill-box; transform-origin: center; }
 .node:hover .body { transform: scale(1.12); }
-.node .toggle { fill: var(--paper); stroke: var(--line); }
+#pContact .btn { white-space: normal; max-width: 100%; text-align: start; height: auto; }
+.node .tg { cursor: pointer; }
+.node .toggle { fill: var(--paper); stroke: var(--line); stroke-width: 1.5; transition: fill .15s; }
+.node .tg:hover .toggle { stroke: var(--green); }
+.node .toggle.closed { fill: var(--green); stroke: var(--green); }
 .node .toggle-t { fill: var(--muted); font-size: 13px; text-anchor: middle; dominant-baseline: central; font-weight: 700; pointer-events: none; }
+.node .toggle-t.closed { fill: var(--paper); font-size: 12px; }
+.node .tg-hit { fill: transparent; }
 .me-tag rect { fill: var(--gold); }
 .me-tag text { fill: #2a2110; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
 .me-pulse { fill: none; stroke: var(--gold); stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -424,6 +430,8 @@ html:not([lang="ar"]) .sheet h3 { font-family: var(--disp-en); }
   <button class="btn" id="zIn" aria-label="zoom in">+</button>
   <button class="btn" id="zOut" aria-label="zoom out">−</button>
   <button class="btn" id="zFit" aria-label="fit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button class="btn" id="zExpand" aria-label="expand all"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg></button>
+  <button class="btn" id="zCollapse" aria-label="collapse all"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8"/></svg></button>
   <button class="btn" id="zMe" aria-label="me"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
 </div>
 
@@ -483,6 +491,8 @@ const T = {
     viewTree: "شجرة", viewCircle: "دائرة", poster: "ملصق", requests: "الطلبات",
     people: "فرد", generations: "أجيال", photos: "صور", generation: "الجيل", children: "الأبناء",
     descendants: "الذرية", loading: "نزرع الشجرة…", son: "بن", daughter: "بنت", you: "أنت",
+    hideKids: "إخفاء الأبناء", showKids: "إظهار الأبناء", showBranch: "فتح الفرع كاملاً",
+    expandAll: "فتح الكل", collapseAll: "طيّ الكل (يبقى خطّك مفتوحاً)",
     youAreOwner: "وضع المالك", suggestEdit: "اقترح تصحيحًا", addChild: "إضافة ابن أو بنت",
     addPhoto: "أضف صورة", edit: "تعديل", del: "حذف", changePhoto: "تغيير الصورة", removePhoto: "حذف الصورة",
     reqTitle: "أرسل طلبًا", reqSub: "يصل طلبك إلى أحمد والمسؤولين، ويظهر في الشجرة بعد الموافقة.",
@@ -665,6 +675,8 @@ const T = {
     viewTree: "Tree", viewCircle: "Circle", poster: "Poster", requests: "Requests",
     people: "people", generations: "generations", photos: "photos", generation: "Generation", children: "Children",
     descendants: "Descendants", loading: "Growing the tree…", son: "son of", daughter: "daughter of", you: "You",
+    hideKids: "Hide children", showKids: "Show children", showBranch: "Open whole branch",
+    expandAll: "Expand all", collapseAll: "Collapse all (keeps your line open)",
     youAreOwner: "Owner mode", suggestEdit: "Suggest a correction", addChild: "Add a child",
     addPhoto: "Add a photo", edit: "Edit", del: "Delete", changePhoto: "Change photo", removePhoto: "Remove photo",
     reqTitle: "Send a request", reqSub: "Your request goes to Ahmad and the admins and appears in the tree once approved.",
@@ -860,6 +872,8 @@ const T = {
     son: "Sohn von",
     daughter: "Tochter von",
     you: "Du",
+    hideKids: "Kinder einklappen", showKids: "Kinder anzeigen", showBranch: "Ganzen Zweig öffnen",
+    expandAll: "Alle aufklappen", collapseAll: "Alle einklappen (meine Linie bleibt offen)",
     youAreOwner: "Besitzer-Modus",
     suggestEdit: "Korrektur vorschlagen",
     addChild: "Kind hinzufügen",
@@ -1107,6 +1121,10 @@ function applyLang() {
   document.querySelectorAll("[data-ph]").forEach((el) => { el.placeholder = t(el.dataset.ph); });
   document.getElementById("btnLang").textContent = { ar: "EN", en: "DE", de: "ع" }[lang];
   document.getElementById("btnLang").title = { ar: "English", en: "Deutsch", de: "العربية" }[lang];
+  for (const [bid, key] of [["zExpand", "expandAll"], ["zCollapse", "collapseAll"]]) {
+    const b = document.getElementById(bid);
+    if (b) { b.title = t(key); b.setAttribute("aria-label", t(key)); }
+  }
   document.title = { ar: "شجرة آل عمران · Omran Family Tree", en: "Omran Family Tree · شجرة آل عمران", de: "Stammbaum Omran · شجرة آل عمران" }[lang];
 }
 
@@ -1120,7 +1138,11 @@ let rolesUid = null; // uid whose roles (owner/admin/member) have been probed
 let isMember = false; // admin-approved family member (members/{uid})
 let view = "tree";
 let selected = null;
-let collapsed = new Set();
+let collapsed = new Set(); // ids whose children are hidden (tree view); remembered per browser
+try { collapsed = new Set(JSON.parse(localStorage.getItem("ft-collapsed") || "[]")); } catch (e) { /* storage blocked */ }
+function saveCollapsed() {
+  try { localStorage.setItem("ft-collapsed", JSON.stringify([...collapsed])); } catch (e) { /* storage blocked */ }
+}
 let firstDraw = true;
 let pending = [];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -1227,7 +1249,9 @@ function linkPath(kind, s, t2) {
 function render(animate = false) {
   if (!tree) return;
   computeBranches();
-  layout = computeLayout(view);
+  // the circle view always shows everyone; collapsing applies to the tree view and is kept for it
+  layout = computeLayout(view, view === "radial");
+  saveCollapsed();
   const { nodes, root } = layout;
   const hl = new Set([...(selected ? lineage(selected) : []), ...(typeof extraHL === "undefined" ? [] : extraHL)]);
 
@@ -1309,20 +1333,20 @@ function render(animate = false) {
       }
     }
   });
-  // collapse toggles (tree view)
+  // collapse toggles (tree view): "−" when open, a filled "+N" pill (hidden descendants) when closed
   all.select(".tg").each(function (d) {
     const g = d3.select(this); g.selectAll("*").remove();
     const id = d.d.data.id;
     const n = kidsOf(id).length;
     if (!n || view !== "tree") return;
     const yy = R + 44;
-    g.append("circle").attr("class", "toggle").attr("cy", yy).attr("r", 10);
-    g.append("text").attr("class", "toggle-t").attr("y", yy).text(collapsed.has(id) ? "+" : "−");
-    g.on("click", (e) => {
-      e.stopPropagation();
-      collapsed.has(id) ? collapsed.delete(id) : collapsed.add(id);
-      render(false);
-    });
+    const closed = collapsed.has(id);
+    const label = closed ? "+" + descCount(id) : "−";
+    const w = closed ? Math.max(24, textWidth(label, 12) + 14) : 22;
+    g.append("rect").attr("class", "tg-hit").attr("x", -w / 2 - 8).attr("y", yy - 18).attr("width", w + 16).attr("height", 36);
+    g.append("rect").attr("class", "toggle" + (closed ? " closed" : "")).attr("x", -w / 2).attr("y", yy - 11).attr("width", w).attr("height", 22).attr("rx", 11);
+    g.append("text").attr("class", "toggle-t" + (closed ? " closed" : "")).attr("y", yy).text(label);
+    g.on("click", (e) => { e.stopPropagation(); toggleBranch(id); });
   });
   // "you" tag
   all.select(".me").each(function (d) {
@@ -1363,6 +1387,42 @@ function focus(id, k = 1, duration = 900) {
     .call(zoom.transform, d3.zoomIdentity.translate(W / 2 + shift - n.x * k, (W > 860 ? H / 2 : H * 0.28) + 30 - n.y * k).scale(k));
 }
 function expandTo(id) { lineage(id).slice(1).forEach((a) => collapsed.delete(a)); }
+
+/* collapse / expand: re-render, then shift the view so the person that was clicked stays on the same spot */
+function keepInPlace(id, change) {
+  const before = layout?.nodes.get(id);
+  change();
+  render(false);
+  const after = layout?.nodes.get(id);
+  // translateBy works in world units (it is multiplied by the current scale internally)
+  if (before && after) svg.call(zoom.translateBy, before.x - after.x, before.y - after.y);
+  if (selected) openPanel(selected);
+}
+function toggleBranch(id) {
+  if (view !== "tree") setView("tree");
+  keepInPlace(id, () => { collapsed.has(id) ? collapsed.delete(id) : collapsed.add(id); });
+}
+function openWholeBranch(id) {
+  if (view !== "tree") setView("tree");
+  keepInPlace(id, () => {
+    collapsed.delete(id);
+    const st = [...kidsOf(id)];
+    while (st.length) { const k = st.pop(); collapsed.delete(k); st.push(...kidsOf(k)); }
+  });
+}
+const branchHasHidden = (id) => {
+  const st = [id];
+  while (st.length) { const k = st.pop(); if (collapsed.has(k)) return true; st.push(...kidsOf(k)); }
+  return false;
+};
+function expandAll() { collapsed.clear(); if (view !== "tree") setView("tree"); else { render(false); fit(); } }
+function collapseAll() {
+  // close every family that has children, but keep the line from the root down to "me" open
+  const keep = new Set(myId() ? lineage(myId()) : []);
+  keep.add(tree.rootId);
+  collapsed = new Set(Object.keys(tree.people).filter((id) => kidsOf(id).length && !keep.has(id)));
+  if (view !== "tree") setView("tree"); else { render(false); fit(); }
+}
 
 /* ================= panel ================= */
 const panel = document.getElementById("panel");
@@ -1452,6 +1512,12 @@ function openPanel(id) {
       <div class="row"><button class="btn" data-a="rchild">＋ ${t("addChild")}</button><button class="btn" data-a="redit">✎ ${t("suggestEdit")}</button></div>`;
   }
   A.insertAdjacentHTML("beforeend", `<button class="btn" data-a="stories">📖 ${t("memories")}</button>`);
+  if (kids.length) {
+    const closed = collapsed.has(id) && view === "tree";
+    const branchBtn = branchHasHidden(id) && !(closed && !kids.some((k) => kidsOf(k).length))
+      ? `<button class="btn" data-a="branch">⊞ ${t("showBranch")}</button>` : "";
+    A.insertAdjacentHTML("afterbegin", `<div class="row"><button class="btn" data-a="fold">${closed ? "▸ " + t("showKids") + ` (${descCount(id)})` : "▾ " + t("hideKids")}</button>${branchBtn}</div>`);
+  }
   panel.classList.add("open");
   pushLayer("panel");
 }
@@ -1467,6 +1533,8 @@ panel.addEventListener("click", (e) => {
   if (a === "rmphoto") removePhoto(id);
   if (a === "del") deletePerson(id);
   if (a === "stories") { storyFilter = id; openDiwan("stories"); return; }
+  if (a === "fold") { toggleBranch(id); return; }
+  if (a === "branch") { openWholeBranch(id); return; }
   if (a === "signin") { if (user) openDiwan("chat"); else signInGoogle(); }
   // requests need a verified Google account: sign in first, then open the form
   const req = { rphoto: "photo", rchild: "add", redit: "edit" }[a];
@@ -3064,12 +3132,13 @@ document.getElementById("zIn").onclick = () => svg.transition().call(zoom.scaleB
 document.getElementById("zOut").onclick = () => svg.transition().call(zoom.scaleBy, 1 / 1.35);
 document.getElementById("zFit").onclick = () => fit();
 document.getElementById("zMe").onclick = () => myId() && select(myId());
+document.getElementById("zExpand").onclick = expandAll;
+document.getElementById("zCollapse").onclick = collapseAll;
 const setView = (v) => {
   clearTimeout(introTimer);
   view = v;
   document.getElementById("vTree").classList.toggle("on", v === "tree");
   document.getElementById("vRadial").classList.toggle("on", v === "radial");
-  if (v === "radial") collapsed.clear();
   gLinks.selectAll("*").remove(); gNodes.selectAll("*").remove();
   render(true); setTimeout(() => fit(900), 60);
 };
@@ -3134,6 +3203,9 @@ async function loadPhotos() {
 }
 let photosLoaded = false;
 function firstRender() {
+  // drop remembered ids that no longer exist, and never hide "me" behind a collapsed branch
+  collapsed = new Set([...collapsed].filter((id) => P(id)));
+  if (myId()) expandTo(myId());
   gLinks.selectAll("*").remove(); gNodes.selectAll("*").remove();
   render(true);
   loader.classList.add("done");
