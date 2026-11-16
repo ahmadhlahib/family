@@ -1,0 +1,7 @@
+# Family data and owner details never go to the public repo.
+seed.json
+tools/
+firestore.rules
+firebase.json
+.firebaserc
+*.log
